@@ -1122,21 +1122,23 @@ grid-template-columns: 1fr;
 
   .header {
    height: auto;              /* remove fixed height */
-    min-height: 70vh;          /* proper screen fit */
+    min-height: 60vh;          /* proper screen fit */
     display: flex;
     align-items: flex-start;   /* move content to top */
-    padding-top: 90px;         /* just below navbar */
-    padding-bottom: 40px;          /* side spacing */
+    padding-top: 60px;         /* just below navbar */
+    padding-bottom: 20px;          /* side spacing */
   }
 
   .header__container {
     padding-top: 80px; 
      padding: 0 1rem;/* space for navbar */
+    margin-top: 0; 
   }
 
   .header__container h1 {
-    font-size: 1.8rem;           /* smaller heading */
-    line-height: 2.2rem;
+    font-size: 1.6rem;           /* smaller heading */
+    line-height: 2rem;
+    margin-top: 0;
   }
 
   .header__container p {
