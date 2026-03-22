@@ -986,12 +986,12 @@ grid-template-columns: 1fr;
 
   /* 1. Section headings (Core Features etc.) */
   .section__header {
-    font-size: 1.rem;
-    line-height: 2.2rem;
+    font-size: 1.4rem;
+    line-height: 1.8rem;
   }
 
   .section__subheader {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
   }
 
   /* 2. Feature cards (MAIN ISSUE) */
@@ -1027,6 +1027,48 @@ grid-template-columns: 1fr;
   /* 5. Reduce all paragraph sizes globally */
   p {
     font-size: 0.95rem;
+  }
+  .feature__grid {
+    gap: 0.8rem; /* reduced spacing */
+  }
+
+  /* ===== FEATURE CARD ===== */
+  .feature__card {
+    padding: 0.6rem 0; /* reduce vertical space */
+  }
+
+  /* ICON */
+  .feature__card span {
+    font-size: 1.6rem;
+    margin-bottom: 0.2rem;
+  }
+
+  /* TITLE */
+  .feature__card h4 {
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  /* DESCRIPTION */
+  .feature__card p {
+    font-size: 0.8rem;
+    line-height: 1.2rem;
+  }
+
+  /* ===== REMOVE EXTRA SPACE BETWEEN ITEMS ===== */
+  .feature__card + .feature__card {
+    margin-top: 0.5rem;
+  }
+
+  /* ===== GLOBAL PARAGRAPH CONTROL ===== */
+  p {
+    font-size: 0.85rem;
+    line-height: 1.3rem;
+  }
+
+  /* ===== SECTION PADDING FIX ===== */
+  .section__container {
+    padding: 2rem 1rem;
   }
 
 }
@@ -1134,13 +1176,15 @@ grid-template-columns: 1fr;
 
 /* Small label: ABOUT US */
 .section__subheader {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  margin-bottom: 0.3rem;
 }
 
 /* Main heading */
 .section__header {
-  font-size: 1.6rem;
-  line-height: 2rem;
+  font-size: 1.2rem;
+  line-height: 1.6rem;
+  margin-bottom: 0.8rem;
 }
 
 /* Paragraph text */
