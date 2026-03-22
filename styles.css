@@ -969,3 +969,52 @@ grid-template-columns: 1fr;
     margin-top: 1rem;
   }
 }
+/* ================= MOBILE TEXT + SPACING FIX ================= */
+@media (max-width: 768px) {
+
+  /* 1. Section headings (Core Features etc.) */
+  .section__header {
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+  }
+
+  .section__subheader {
+    font-size: 0.85rem;
+  }
+
+  /* 2. Feature cards (MAIN ISSUE) */
+  .feature__card {
+    text-align: left;
+    padding: 1rem 0;
+  }
+
+  .feature__card span {
+    font-size: 2rem;   /* smaller icon */
+  }
+
+  .feature__card h4 {
+    font-size: 1.2rem; /* smaller title */
+    margin-bottom: 0.5rem;
+  }
+
+  .feature__card p {
+    font-size: 0.9rem; /* smaller paragraph */
+    line-height: 1.4rem;
+  }
+
+  /* 3. Reduce spacing between feature items */
+  .feature__grid {
+    gap: 1rem;
+  }
+
+  /* 4. Fix large empty spaces */
+  .section__container {
+    padding: 2.5rem 1rem;
+  }
+
+  /* 5. Reduce all paragraph sizes globally */
+  p {
+    font-size: 0.95rem;
+  }
+
+}
