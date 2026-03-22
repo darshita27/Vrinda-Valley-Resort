@@ -1204,24 +1204,29 @@ grid-template-columns: 1fr;
 @media (max-width: 768px) {
 
   .header {
-   height: auto;              /* remove fixed height */
-    min-height: 60vh;          /* proper screen fit */
+   height: 100vh;              /* remove fixed height */        /* proper screen fit */
     display: flex;
-    align-items: flex-start;   /* move content to top */
-    padding-top: 60px;         /* just below navbar */
-    padding-bottom: 20px;          /* side spacing */
+    align-items: center;   /* move content to top */
+    padding-top:0          /* side spacing */
   }
 
   .header__container {
-    padding-top: 80px; 
-     padding: 0 1rem;/* space for navbar */
-    margin-top: 0; 
+    padding: 0 1.5rem;
+    margin: 0;
+    text-align: left; 
+  }
+  .header__container .section__subheader {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    text-align: left;
   }
 
   .header__container h1 {
-    font-size: 1.2rem;           /* smaller heading */
-    line-height: 2rem;
-    margin-top: 0;
+   font-size: 2.8rem;          /* BIG like 2nd image */
+    line-height: 3.2rem;
+    font-weight: 700;
+    text-align: left;           /* LEFT align */
+    margin: 0;
   }
 
   .header__container p {
