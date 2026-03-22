@@ -128,7 +128,7 @@ body {
 }
 
 nav {
-  position: fixed;
+  position: absolute;
   top: 0;
   width: 100%;
   z-index: 999;
@@ -200,17 +200,22 @@ nav {
   color: var(--secondary-color);
 }
 
-.header {
-  padding-top: 120px;   /* space for navbar */
-  padding-bottom: 5rem;
+.header {  /* space for navbar */
+  height: 100vh;   /* full screen hero */
+  padding: 0;      /* remove gap */
+  
   background-image: linear-gradient(
-      rgba(15, 26, 44, 0.1),
-      rgba(15, 26, 44, 0.1)
+      rgba(15, 26, 44, 0.3),
+      rgba(15, 26, 44, 0.3)
     ),
     url("assets/header_img.png");
-  background-position: center center;
+
+  background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;  
 }
 
 .header__container .section__subheader {
@@ -697,7 +702,8 @@ grid-template-columns: 1fr;
 
 @media (width > 768px) {
   nav {
-    position: static;
+    position: absolute;
+    top:0;
     padding-inline: 1rem;
     background-color: var(--primary-color);
   }
