@@ -1018,3 +1018,29 @@ grid-template-columns: 1fr;
   }
 
 }
+/* ================= REMOVE TOP GAP (FINAL FIX) ================= */
+@media (max-width: 768px) {
+
+  /* Remove browser default spacing */
+  body {
+    margin: 0;
+    padding-top: 0 !important;
+  }
+
+  /* Remove nav spacing */
+  nav {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  /* Remove extra gap from navbar container */
+  .nav__bar {
+    margin-top: 0 !important;
+  }
+
+  /* Ensure navbar sticks to top */
+  nav {
+    top: 0;
+  }
+
+}
