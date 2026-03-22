@@ -936,8 +936,9 @@ grid-template-columns: 1fr;
 
   /* 2. Fix grid layout (images + cards) */
   .about__grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;   /* 👈 2 columns */
+    gap: 1rem;
   }
 
   /* 3. Remove weird shifting */
@@ -949,13 +950,16 @@ grid-template-columns: 1fr;
   /* 4. Fix image size */
   .about__image img {
     width: 100%;
-    height: auto;
-    border-radius: 10px;
+    height: 150px;         /* fixed height for uniform look */
+    object-fit: cover;
+    border-radius: 12px;
   }
 
   /* 5. Fix cards */
   .about__card {
-    padding: 1.5rem;
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
   }
 
   /* 6. Center content nicely */
@@ -1057,8 +1061,6 @@ grid-template-columns: 1fr;
 
   /* 1. Stack everything in perfect order */
   .about__grid {
-    display: flex;
-    flex-direction: column;
     gap: 1.5rem;
   }
 
