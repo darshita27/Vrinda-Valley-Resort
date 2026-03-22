@@ -1136,7 +1136,7 @@ grid-template-columns: 1fr;
   }
 
   .header__container h1 {
-    font-size: 1.6rem;           /* smaller heading */
+    font-size: 1.2rem;           /* smaller heading */
     line-height: 2rem;
     margin-top: 0;
   }
