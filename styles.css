@@ -1094,6 +1094,7 @@ grid-template-columns: 1fr;
 
   /* Ensure navbar sticks to top */
   nav {
+   position: absolute;
     top: 0;
   }
 
@@ -1208,7 +1209,11 @@ grid-template-columns: 1fr;
    height: 100vh;              /* remove fixed height */        /* proper screen fit */
     display: flex;
     align-items: center;   /* move content to top */
-    padding-top:0          /* side spacing */
+    padding-top:0 
+    padding: 0;
+    margin: 0;
+    
+    /* side spacing */
   }
 
   .header__container {
@@ -1223,8 +1228,8 @@ grid-template-columns: 1fr;
   }
 
   .header__container h1 {
-   font-size: 2.8rem;          /* BIG like 2nd image */
-    line-height: 3.2rem;
+   font-size: 2.6rem;          /* BIG like 2nd image */
+    line-height: 3rem;
     font-weight: 700;
     text-align: left;           /* LEFT align */
     margin: 0;
@@ -1234,55 +1239,6 @@ grid-template-columns: 1fr;
     font-size: 0.9rem;
     margin-bottom: 10px;
   }
-
-}
-@media (max-width: 768px) {
-
-  /* 🔴 1. REMOVE EXTRA TOP GAP COMPLETELY */
-  body {
-    margin: 0;
-    padding: 0 !important;
-  }
-
-  nav {
-    position: absolute;
-    top: 0;
-  }
-
-  /* 🔴 2. HERO IMAGE PERFECT FIT */
-  .header {
-    height: 100vh;
-    padding: 0;
-    margin: 0;
-    
-    display: flex;
-    align-items: flex-end;   /* 👈 push text slightly down (like 2nd image) */
-  }
-
-  /* 🔴 3. TEXT POSITION FIX */
-  .header__container {
-    padding: 0 1.5rem 40px;  /* 👈 bottom spacing for better look */
-    margin: 0;
-    text-align: left;
-  }
-
-  /* 🔴 4. ABOUT US TEXT */
-  .header__container .section__subheader {
-    font-size: 0.8rem;
-    margin-bottom: 0.3rem;
-    color: white;
-  }
-
-  /* 🔴 5. MAIN HEADING (PERFECT LOOK) */
-  .header__container h1 {
-    font-size: 2.6rem;
-    line-height: 3rem;
-    font-weight: 700;
-    margin: 0;
-    color: white;
-  }
-
-  /* 🔴 6. REMOVE EXTRA SPACE BELOW HERO */
   .booking {
     margin-top: 0 !important;
   }
