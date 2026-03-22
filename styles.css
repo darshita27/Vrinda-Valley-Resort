@@ -1250,7 +1250,7 @@ grid-template-columns: 1fr;
 }
 @media (max-width: 768px) {
 
-  /* 🔴 1. REMOVE TOP GAP COMPLETELY */
+  /* ✅ Remove unwanted global spacing */
   body {
     margin: 0;
     padding: 0 !important;
@@ -1261,30 +1261,44 @@ grid-template-columns: 1fr;
     top: 0;
   }
 
-  /* 🔴 2. FIX HERO HEIGHT + REMOVE EMPTY SPACE */
+  /* ✅ PERFECT HERO SECTION */
   .header {
-    height: 85vh;              /* 👈 NOT full screen */
+    height: 100vh;                 /* full screen */
     padding: 0;
     margin: 0;
 
     display: flex;
-    align-items: flex-end;     /* 👈 push content down */
+    align-items: center;           /* 👈 center (NOT bottom) */
     justify-content: flex-start;
   }
 
-  /* 🔴 3. FIX TEXT POSITION (IMPORTANT) */
+  /* ✅ TEXT POSITION (SLIGHTLY LOWER LIKE DESIGN) */
   .header__container {
-    padding: 0 1.5rem 20px;    /* 👈 small bottom gap only */
+    padding: 0 1.5rem;
+    margin-top: 80px;              /* 👈 pushes text slightly down */
+  }
+
+  /* ✅ TEXT SIZE */
+  .header__container h1 {
+    font-size: 2.8rem;
+    line-height: 3.2rem;
+    font-weight: 700;
     margin: 0;
   }
 
-  /* 🔴 4. REMOVE EXTRA SPACE BELOW IMAGE */
+  .header__container .section__subheader {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* ✅ REMOVE GAP BELOW IMAGE */
   .booking {
-    margin-top: -10px;         /* 👈 pulls section up */
+    margin-top: 0 !important;
   }
 
   .booking__container {
-    padding-top: 1rem;
+    padding-top: 1.2rem;
   }
 
 }
+   
