@@ -247,7 +247,7 @@ nav {
   font-weight: 600;
 }
 
-.input_group input{
+.input__group input{
   padding: 10px 5px;
   font-size: 14px;
   border: none;
@@ -258,7 +258,7 @@ nav {
   transition:0.3s;
 }
 
-.input_group input::placeholder{
+.input__group input::placeholder{
   color: rgba(255,255,255,0.6);
 }
 .input__group input:focus {
@@ -830,4 +830,79 @@ grid-template-columns: 1fr;
   margin-bottom:0.5rem;
 }
 
+}
+/* ================= MOBILE ONLY FIX ================= */
+@media (max-width: 768px) {
+
+  /* 1. Fix navbar overlap */
+  body {
+    padding-top: 90px;
+  }
+
+  /* 2. Enable hamburger menu */
+  .nav__menu__btn {
+    display: block;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .nav__links {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    background: white;
+    padding: 1rem;
+    gap: 1rem;
+    display: none;
+  }
+
+  .nav__links.open {
+    display: flex;
+  }
+
+  /* 3. Fix logo size */
+  .logo img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .nav__logo span {
+    font-size: 16px;
+  }
+
+  /* 4. Fix BIG heading text */
+  .header__container h1 {
+    font-size: 2.5rem;
+    line-height: 3rem;
+  }
+
+  /* 5. Fix booking form layout */
+  .booking__container form {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .booking__container {
+    padding: 2rem 1rem;
+  }
+
+  /* 6. Fix input width issue */
+  .input__group input {
+    width: 100%;
+    padding: 10px;
+  }
+
+  /* 7. Fix section spacing */
+  .section__container {
+    padding: 3rem 1rem;
+  }
+
+  /* 8. Fix videos */
+  video {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
 }
