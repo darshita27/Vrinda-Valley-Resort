@@ -847,15 +847,16 @@ grid-template-columns: 1fr;
   }
 
   .nav__links {
-    position: absolute;
-    top: 70px;
+    position: fixed;
+    top: 80px;
     left: 0;
     width: 100%;
-    flex-direction: column;
     background: white;
+    flex-direction: column;
     padding: 1rem;
     gap: 1rem;
     display: none;
+    z-index: 999; 
   }
 
   .nav__links.open {
