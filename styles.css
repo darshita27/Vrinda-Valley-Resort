@@ -129,10 +129,10 @@ body {
 
 nav {
   position: fixed;
-  width: 100%;
-  z-index: 9;
   top: 0;
-  padding-top: 10px;
+  width: 100%;
+  z-index: 999;
+  padding: 0;   
 }
 
 .nav__bar {
