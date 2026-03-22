@@ -1118,3 +1118,25 @@ grid-template-columns: 1fr;
   }
 
 }
+@media (max-width: 768px) {
+
+  .header {
+    height: 80vh;              /* reduce height on phone */
+    min-height: 500px;         /* prevents too small */
+    padding: 0 1rem;           /* side spacing */
+  }
+
+  .header__container {
+    padding-top: 80px;         /* space for navbar */
+  }
+
+  .header__container h1 {
+    font-size: 2rem;           /* smaller heading */
+    line-height: 2.5rem;
+  }
+
+  .header__container p {
+    font-size: 0.9rem;
+  }
+
+}
