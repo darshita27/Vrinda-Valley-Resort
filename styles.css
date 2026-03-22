@@ -1044,3 +1044,69 @@ grid-template-columns: 1fr;
   }
 
 }
+/* ================= ABOUT SECTION CLEAN MOBILE DESIGN ================= */
+@media (max-width: 768px) {
+
+  /* 1. Stack everything in perfect order */
+  .about__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* 2. Reset desktop positioning */
+  .about__image:nth-child(1),
+  .about__card:nth-child(4) {
+    transform: none !important;
+  }
+
+  /* 3. Make all blocks full width */
+  .about__image,
+  .about__card {
+    width: 100%;
+  }
+
+  /* 4. Image styling (like your nn design) */
+  .about__image img {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+  }
+
+  /* 5. Card styling (clean centered look) */
+  .about__card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  /* Special dark card (Luxury Room) */
+  .about__card:nth-child(4) {
+    background: #0f1a2c;
+    color: white;
+  }
+
+  .about__card:nth-child(4) h4,
+  .about__card:nth-child(4) p {
+    color: white;
+  }
+
+  /* 6. Icon size fix */
+  .about__card span {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* 7. Text size fix */
+  .about__card h4 {
+    font-size: 1.3rem;
+  }
+
+  .about__card p {
+    font-size: 0.9rem;
+    line-height: 1.4rem;
+  }
+
+}
