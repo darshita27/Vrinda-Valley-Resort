@@ -1130,6 +1130,31 @@ grid-template-columns: 1fr;
     font-size: 0.75rem;
     line-height: 1.1rem;
   }
+    /* ABOUT SECTION TEXT FIX (MOBILE ONLY) */
+
+/* Small label: ABOUT US */
+.section__subheader {
+  font-size: 0.75rem;
+}
+
+/* Main heading */
+.section__header {
+  font-size: 1.6rem;
+  line-height: 2rem;
+}
+
+/* Paragraph text */
+.section__description {
+  font-size: 0.85rem;
+  line-height: 1.4rem;
+  padding: 0 10px;
+}
+
+/* Button size */
+.btn {
+  font-size: 0.85rem;
+  padding: 10px 18px;
+}
 
 }
 @media (max-width: 768px) {
