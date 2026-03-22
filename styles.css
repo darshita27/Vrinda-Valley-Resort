@@ -1209,7 +1209,7 @@ grid-template-columns: 1fr;
    height: 100vh;              /* remove fixed height */        /* proper screen fit */
     display: flex;
     align-items: center;   /* move content to top */
-    padding-top:0 
+    padding-top:0; 
     padding: 0;
     margin: 0;
     
@@ -1245,6 +1245,46 @@ grid-template-columns: 1fr;
 
   .booking__container {
     padding-top: 1.5rem;   /* reduce gap */
+  }
+
+}
+@media (max-width: 768px) {
+
+  /* 🔴 1. REMOVE TOP GAP COMPLETELY */
+  body {
+    margin: 0;
+    padding: 0 !important;
+  }
+
+  nav {
+    position: absolute;
+    top: 0;
+  }
+
+  /* 🔴 2. FIX HERO HEIGHT + REMOVE EMPTY SPACE */
+  .header {
+    height: 85vh;              /* 👈 NOT full screen */
+    padding: 0;
+    margin: 0;
+
+    display: flex;
+    align-items: flex-end;     /* 👈 push content down */
+    justify-content: flex-start;
+  }
+
+  /* 🔴 3. FIX TEXT POSITION (IMPORTANT) */
+  .header__container {
+    padding: 0 1.5rem 20px;    /* 👈 small bottom gap only */
+    margin: 0;
+  }
+
+  /* 🔴 4. REMOVE EXTRA SPACE BELOW IMAGE */
+  .booking {
+    margin-top: -10px;         /* 👈 pulls section up */
+  }
+
+  .booking__container {
+    padding-top: 1rem;
   }
 
 }
