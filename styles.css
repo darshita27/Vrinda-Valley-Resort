@@ -913,7 +913,7 @@ grid-template-columns: 1fr;
   }
 
   .nav__bar {
-    margin-top: 5px;
+    margin-top: 0;
   }
 
 }
