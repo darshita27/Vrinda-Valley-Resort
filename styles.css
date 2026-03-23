@@ -166,7 +166,7 @@ nav {
   position: static;
   padding: 0;
   width: auto;
-  display: none;
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 2rem;
