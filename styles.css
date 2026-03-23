@@ -868,6 +868,9 @@ grid-template-columns: 1fr;
   .nav__links.open {
     display: flex;
   }
+  .nav__links a {
+  font-size: 12px;
+}
 
   /* 3. Fix logo size */
   .logo img {
