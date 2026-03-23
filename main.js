@@ -80,18 +80,30 @@ ScrollReveal().reveal(".news__card", {
   ...scrollRevealOption,
   interval: 500,
 });
-const bookNowBtn = document.getElementById("bookNowBtn");
+const bookNowBtns = document.querySelectorAll("#bookNowBtn");
 
-  bookNowBtn.addEventListener("click", function () {
+  bookNowBtns.forEach(button => {
+    button.addEventListener("click", function () {
 
-    document.getElementById("booking").scrollIntoView({
-      behavior: "smooth"
+      const bookingSection = document.getElementById("booking");
+
+      bookingSection.scrollIntoView({
+        behavior: "smooth"
+      });
+
+      setTimeout(() => {
+        bookingSection.classList.add("highlight");
+      }, 400);
+
+      setTimeout(() => {
+        bookingSection.classList.remove("highlight");
+      }, 2400);
+
+      setTimeout(() => {
+        document.getElementById("name").focus();
+      }, 600);
+
     });
-
-    setTimeout(() => {
-      document.getElementById("name").focus();
-    }, 500);
-
   });
 });
 // Book Now button functionality
