@@ -158,6 +158,7 @@ nav {
 
 .nav__menu__btn {
  display: none;
+  z-index: 1000;
 }
 
 .nav__links {
@@ -165,18 +166,18 @@ nav {
   position: static;
   padding: 0;
   width: auto;
-  display: flex;
+  display: none;
   flex-direction: row;
   align-items: center;
   gap: 2rem;
   background-color: transparent;
   transform: none;
   transition: 0.5s;
-  z-index: -1;
 }
 
 .nav__links.open {
   transform: translateY(0);
+  display: flex;
 }
 
 .nav__links a {
