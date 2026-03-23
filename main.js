@@ -82,3 +82,24 @@ ScrollReveal().reveal(".news__card", {
 });
 
 });
+// Book Now button functionality
+const bookNowBtn = document.getElementById("bookNowBtn");
+
+bookNowBtn.addEventListener("click", function () {
+
+  // Scroll to booking section
+  document.getElementById("booking").scrollIntoView({
+    behavior: "smooth"
+  });
+
+  // Focus on first input after scroll
+  setTimeout(() => {
+    document.getElementById("name").focus();
+  }, 500);
+
+  // Optional: small alert guidance
+  setTimeout(() => {
+    alert("Please fill your details to check availability");
+  }, 600);
+
+});
