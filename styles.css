@@ -849,22 +849,20 @@ grid-template-columns: 1fr;
 
   /* 2. Enable hamburger menu */
   .nav__menu__btn {
-    display: block;
+    display: none;
     font-size: 24px;
     cursor: pointer;
   }
 
   .nav__links {
-    position: fixed;
-    top: 80px;
-    left: 0;
-    width: 100%;
-    background: white;
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1rem;
-    display: none;
-    z-index: 999; 
+    position: static;        /* no overlay */
+    display: flex;           /* ✅ ALWAYS VISIBLE */
+    flex-direction: row;     /* show in one line */
+    justify-content: center; /* center alignment */
+    flex-wrap: wrap;         /* wrap if needed */
+    gap: 12px;
+    padding: 10px 5px;
+    background: transparent;
   }
 
   .nav__links.open {
