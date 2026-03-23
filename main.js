@@ -80,7 +80,7 @@ ScrollReveal().reveal(".news__card", {
   ...scrollRevealOption,
   interval: 500,
 });
-const bookNowBtns = document.querySelectorAll("#bookNowBtn");
+const bookNowBtns = document.querySelectorAll(".bookNowBtn");
 
   bookNowBtns.forEach(button => {
     button.addEventListener("click", function () {
