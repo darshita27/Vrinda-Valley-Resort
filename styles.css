@@ -1301,4 +1301,8 @@ grid-template-columns: 1fr;
   }
 
 }
+.highlight {
+  box-shadow: 0 0 15px #f6ac0f;
+  transition: 0.3s;
+}
    
