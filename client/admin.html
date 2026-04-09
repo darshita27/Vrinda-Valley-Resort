@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid black;
+      text-align: center;
+    }
+    th {
+      background-color: #f6ac0f;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>All Bookings</h2>
+<div style="display:flex; gap:20px; margin-bottom:20px;">
+  <div id="total" style="padding:20px; background:#f1f1f1;">Total: 0</div>
+  <div id="confirmed" style="padding:20px; background:#d4edda;">Confirmed: 0</div>
+  <div id="pending" style="padding:20px; background:#fff3cd;">Pending: 0</div>
+  <div id="cancelled" style="padding:20px; background:#f8d7da;">Cancelled: 0</div>
+</div>
+<table id="bookingTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Email</th>
+      <th>Arrival Date</th>
+      <th>Departure Date</th>
+      <th>Guests</th>
+      <th>Status</th>
+      <th>Action</th>
+<th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody></tbody>
+</table>
+
+<script>
+    async function deleteBooking(id) {
+  if (!confirm("Are you sure you want to delete?")) return;
+
+  const token = localStorage.getItem("token");
+
+await fetch(`http://localhost:5000/api/bookings/${id}`, {
+  method: "DELETE",
+  headers: {
+    Authorization: "Bearer " + token
+  }
+});
+
+  alert("Deleted successfully");
+  loadBookings();
+}
+async function updateStatus(id, status) {
+ const token = localStorage.getItem("token");
+
+await fetch(`http://localhost:5000/api/bookings/${id}`, {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + token
+  },
+    body: JSON.stringify({ status })
+  });
+
+  alert("Status updated");
+  loadBookings();}
+async function loadBookings() {
+  try {
+    const token = localStorage.getItem("token"); // get token
+
+const res = await fetch("http://localhost:5000/api/bookings", {
+  headers: {
+    Authorization: "Bearer " + token
+  }
+});
+    const data = await res.json();
+    if (!Array.isArray(data)) {
+  console.log("ERROR:", data);
+  alert(data.msg || "Error loading bookings");
+  return;
+}
+
+    const table = document.querySelector("#bookingTable tbody");
+
+    table.innerHTML = ""; // clear old data
+
+    data.forEach(b => {
+      let row = `
+        <tr>
+          <td>${b.name}</td>
+          <td>${b.phone}</td>
+          <td>${b.email}</td>
+          <td>${formatDate(b.arrival)}</td>
+          <td>${formatDate(b.departure)}</td>
+          <td>${b.guests}</td>
+          <td>${b.status}</td>
+          <td>
+      <button onclick="updateStatus('${b._id}', 'Confirmed')">Confirm</button>
+      <button onclick="updateStatus('${b._id}', 'Cancelled')">Cancel</button>
+      <button onclick="deleteBooking('${b._id}')">Delete</button>
+    </td>
+        </tr>
+      `;
+      table.innerHTML += row;
+    });
+
+  } catch (error) {
+    console.log(error);
+    alert("Error loading bookings");
+  }
+}
+
+// format date properly
+function formatDate(date) {
+  if (!date) return "-";
+  return new Date(date).toLocaleDateString();
+}
+async function loadStats() {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch("http://localhost:5000/api/bookings/stats", {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    });
+
+    const data = await res.json();
+
+    document.getElementById("total").innerText = "Total: " + data.total;
+    document.getElementById("confirmed").innerText = "Confirmed: " + data.confirmed;
+    document.getElementById("pending").innerText = "Pending: " + data.pending;
+    document.getElementById("cancelled").innerText = "Cancelled: " + data.cancelled;
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+loadBookings();
+loadStats();
+</script>
+
+</body>
+</html>
