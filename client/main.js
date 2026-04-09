@@ -17,7 +17,7 @@ document.getElementById("bookingForm").addEventListener("submit", async function
   };
 
   try {
-    let response = await fetch("http://localhost:5000/api/bookings", {
+    let response = await fetch("https://vrinda-backend-h8oz.onrender.com/api/bookings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -131,7 +131,7 @@ const bookNowBtns = document.querySelectorAll(".bookNowBtn");
 async function loadStats() {
   const token = localStorage.getItem("token");
 
-  const res = await fetch("http://localhost:5000/api/bookings/stats", {
+  const res = await fetch("https://vrinda-backend-h8oz.onrender.com/api/bookings/stats", {
     headers: {
       Authorization: "Bearer " + token
     }
