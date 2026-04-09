@@ -56,7 +56,7 @@
 
   const token = localStorage.getItem("token");
 
-await fetch(`http://localhost:5000/api/bookings/${id}`, {
+await fetch(`https://vrinda-backend-h8oz.onrender.com/api/bookings/${id}`, {
   method: "DELETE",
   headers: {
     Authorization: "Bearer " + token
@@ -69,7 +69,7 @@ await fetch(`http://localhost:5000/api/bookings/${id}`, {
 async function updateStatus(id, status) {
  const token = localStorage.getItem("token");
 
-await fetch(`http://localhost:5000/api/bookings/${id}`, {
+await fetch(`https://vrinda-backend-h8oz.onrender.com/api/bookings/${id}`, {
   method: "PUT",
   headers: {
     "Content-Type": "application/json",
@@ -84,7 +84,7 @@ async function loadBookings() {
   try {
     const token = localStorage.getItem("token"); // get token
 
-const res = await fetch("http://localhost:5000/api/bookings", {
+const res = await fetch("https://vrinda-backend-h8oz.onrender.com/api/bookings", {
   headers: {
     Authorization: "Bearer " + token
   }
@@ -135,7 +135,7 @@ async function loadStats() {
   try {
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:5000/api/bookings/stats", {
+    const res = await fetch("https://vrinda-backend-h8oz.onrender.com/api/bookings/stats", {
       headers: {
         Authorization: "Bearer " + token
       }
