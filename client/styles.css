@@ -1308,19 +1308,25 @@ grid-template-columns: 1fr;
 
   /* ✅ PERFECT HERO SECTION */
   .header {
-    height: 100vh;                 /* full screen */
+    height: 75vh;
+    min-height: 500px;
     padding: 0;
     margin: 0;
 
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
     display: flex;
-    align-items: center;           /* 👈 center (NOT bottom) */
+    align-items: flex-end;
     justify-content: flex-start;
   }
 
   /* ✅ TEXT POSITION (SLIGHTLY LOWER LIKE DESIGN) */
   .header__container {
-    padding: 0 1.5rem;
-    margin-top: 80px;              /* 👈 pushes text slightly down */
+    padding: 0 1.5rem 3rem;
+    margin-top: 0;
+    width: 100%;         /* 👈 pushes text slightly down */
   }
 
   /* ✅ TEXT SIZE */
