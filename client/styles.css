@@ -898,21 +898,23 @@ grid-template-columns: 1fr;
   }
 
   .nav__links {
-    position: static;        /* no overlay */
-    display: flex;           /* ✅ ALWAYS VISIBLE */
-    flex-direction: row;     /* show in one line */
-    justify-content: center; /* center alignment */
-    flex-wrap: wrap;         /* wrap if needed */
-    gap: 12px;
-    padding: 10px 5px;
+    position: static;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: nowrap;      /* keeps all items in one line */
+    gap: 8px;
+    padding: 8px 5px;
     background: transparent;
+    overflow-x: auto;       /* allows horizontal scroll if needed */
+    white-space: nowrap;
   }
 
   .nav__links.open {
     display: flex;
   }
   .nav__links a {
-  font-size: 12px;
+  font-size: 11px;
 }
 
   /* 3. Fix logo size */
