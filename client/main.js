@@ -143,5 +143,13 @@ async function loadStats() {
   document.getElementById("confirmed").innerText = "Confirmed: " + data.confirmed;
   document.getElementById("pending").innerText = "Pending: " + data.pending;
   document.getElementById("cancelled").innerText = "Cancelled: " + data.cancelled;
+window.onload = function () {
+    document.getElementById("popup-banner").style.display = "block";
+}
+
+document.querySelector(".close-btn").onclick = function () {
+    document.getElementById("popup-banner").style.display = "none";
+}
+
 }
 // Book Now button functionality
