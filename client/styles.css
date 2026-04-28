@@ -934,18 +934,34 @@ grid-template-columns: 1fr;
   /* 5. Fix booking form layout */
   .booking__container form {
     grid-template-columns: 1fr;
-    gap: 15px;
-  }
+    gap: 8px;   /* reduced spacing between fields */
+}
 
-  .booking__container {
-    padding: 2rem 1rem;
-  }
+.booking__container {
+    padding: 1.2rem 1rem;   /* less top-bottom spacing */
+}
 
-  /* 6. Fix input width issue */
-  .input__group input {
+.input__group {
+    gap: 2px;   /* reduce label-input gap */
+}
+
+.input__group label {
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.input__group input,
+.input__group select {
     width: 100%;
-    padding: 10px;
-  }
+    padding: 6px 5px;   /* reduced input height */
+    font-size: 13px;
+}
+
+.booking__container .btn {
+    padding: 10px 16px;
+    font-size: 14px;
+    width: fit-content;
+}
 
   /* 7. Fix section spacing */
   .section__container {
