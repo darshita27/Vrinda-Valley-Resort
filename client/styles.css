@@ -1056,70 +1056,38 @@ grid-template-columns: 1fr;
   }
 
   /* 2. Feature cards (MAIN ISSUE) */
-  .feature__card {
+  /* MOBILE FEATURE SECTION FIX */
+.feature__grid {
+    margin-top: 1rem;
+    gap: 0.4rem;
+}
+
+.feature__card {
     text-align: left;
-    padding: 1rem 0;
-  }
+    padding: 0.3rem 0;
+    margin: 0;
+}
 
-  .feature__card span {
-    font-size: 2rem;   /* smaller icon */
-  }
+.feature__card span {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+}
 
-  .feature__card h4 {
-    font-size: 1.2rem; /* smaller title */
-    margin-bottom: 0.5rem;
-  }
-
-  .feature__card p {
-    font-size: 0.9rem; /* smaller paragraph */
-    line-height: 1.4rem;
-  }
-
-  /* 3. Reduce spacing between feature items */
-  .feature__grid {
-    gap: 1rem;
-  }
-
-  /* 4. Fix large empty spaces */
-  .section__container {
-    padding: 2.5rem 1rem;
-  }
-
-  /* 5. Reduce all paragraph sizes globally */
-  p {
+.feature__card h4 {
     font-size: 0.95rem;
-  }
-  .feature__grid {
-    gap: 0.8rem; /* reduced spacing */
-  }
-
-  /* ===== FEATURE CARD ===== */
-  .feature__card {
-    padding: 0.6rem 0; /* reduce vertical space */
-  }
-
-  /* ICON */
-  .feature__card span {
-    font-size: 1.6rem;
-    margin-bottom: 0.2rem;
-  }
-
-  /* TITLE */
-  .feature__card h4 {
-    font-size: 1rem;
-    margin-bottom: 0.3rem;
-  }
-
-  /* DESCRIPTION */
-  .feature__card p {
-    font-size: 0.8rem;
+    margin-bottom: 3px;
     line-height: 1.2rem;
-  }
+}
 
-  /* ===== REMOVE EXTRA SPACE BETWEEN ITEMS ===== */
-  .feature__card + .feature__card {
-    margin-top: 0.5rem;
-  }
+.feature__card p {
+    font-size: 0.75rem;
+    line-height: 1.1rem;
+    margin: 0;
+}
+
+.section__container {
+    padding: 1.8rem 1rem;
+}
 
   /* ===== GLOBAL PARAGRAPH CONTROL ===== */
   p {
