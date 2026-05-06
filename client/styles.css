@@ -904,7 +904,7 @@ grid-template-columns: 1fr;
     justify-content: center;
     flex-wrap: nowrap;      /* keeps all items in one line */
     gap: 8px;
-    padding: 8px 5px;
+    padding: 10px 5px;
     background: transparent;
     overflow-x: auto;       /* allows horizontal scroll if needed */
     white-space: nowrap;
@@ -914,7 +914,8 @@ grid-template-columns: 1fr;
     display: flex;
   }
   .nav__links a {
-  font-size: 11px;
+  font-size: 10px;
+    flex-shrink: 0; 
 }
 
   /* 3. Fix logo size */
