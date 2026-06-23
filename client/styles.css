@@ -1371,7 +1371,6 @@ grid-template-columns: 1fr;
 }
 
 .footer__links li a {
-  color: inherit;
   text-decoration: none;
 }
    
