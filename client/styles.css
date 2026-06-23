@@ -1343,4 +1343,35 @@ grid-template-columns: 1fr;
   box-shadow: 0 0 15px #f6ac0f;
   transition: 0.3s;
 }
+.footer__links li {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.footer__links li span {
+  min-width: 40px;
+  font-size: 2rem;
+  color: #f4b41a;
+  display: flex;
+  justify-content: center;
+}
+
+.footer__links li div {
+  flex: 1;
+}
+
+.footer__links li h5 {
+  margin: 0 0 5px 0;
+}
+
+.footer__links li p {
+  margin: 0;
+}
+
+.footer__links li a {
+  color: inherit;
+  text-decoration: none;
+}
    
