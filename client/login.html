@@ -1,106 +1,317 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Login | Vrinda Valley Resort</title>
+
+  <link rel="icon" href="assets/logoo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="auth.js"></script>
+  <script>
+    // Requirement 6: an admin with a valid session never sees this form.
+    // Runs before the body paints so there is no flash of the login card.
+    VVAuth.redirectIfAuthenticated();
+  </script>
 
   <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f1a2c, #1e3a5f);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    :root {
+      --primary-color: #0f1a2c;
+      --secondary-color: #f6ac0f;
+      --text-dark: #0f172a;
+      --text-light: #64748b;
+      --white: #ffffff;
+      --danger: #b91c1c;
+      --header-font: "Playfair Display", serif;
     }
 
-    .login-container {
-      background: white;
-      padding: 40px;
-      width: 320px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      font-family: "Poppins", sans-serif;
+      color: var(--text-dark);
+      background-image:
+        linear-gradient(rgba(15, 26, 44, 0.82), rgba(15, 26, 44, 0.82)),
+        url("assets/header_img.png");
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    .login__card {
+      width: 100%;
+      max-width: 420px;
+      padding: 2.5rem 2rem;
+      background: var(--white);
+      border-radius: 14px;
+      box-shadow: 0 25px 55px rgba(0, 0, 0, 0.35);
+    }
+
+    .login__brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
       text-align: center;
     }
 
-    h2 {
-      margin-bottom: 20px;
-      color: #0f1a2c;
+    .login__brand img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e6e6e6;
     }
 
-    input {
+    .login__brand h1 {
+      font-family: var(--header-font);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--primary-color);
+    }
+
+    .login__brand p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .input__group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .input__group label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    .input__group input {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 0.8rem 0.9rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      border: 1px solid #d7dde5;
+      border-radius: 7px;
       outline: none;
       transition: 0.3s;
     }
 
-    input:focus {
-      border-color: #f6ac0f;
-      box-shadow: 0 0 5px rgba(246,172,15,0.5);
+    .input__group input:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 3px rgba(246, 172, 15, 0.22);
     }
 
-    button {
+    .btn {
       width: 100%;
-      padding: 12px;
-      background: #f6ac0f;
-      border: none;
-      color: white;
-      font-weight: bold;
-      border-radius: 6px;
+      padding: 0.85rem 1rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      border-radius: 7px;
       cursor: pointer;
-      margin-top: 10px;
       transition: 0.3s;
     }
 
-    button:hover {
-      background: #d99300;
+    .btn--primary {
+      background: var(--secondary-color);
+      color: var(--primary-color);
+    }
+
+    .btn--primary:hover:not(:disabled) { background: #dd980a; }
+
+    .btn--ghost {
+      margin-top: 0.7rem;
+      background: transparent;
+      color: var(--primary-color);
+      border-color: #d7dde5;
+    }
+
+    .btn--ghost:hover { background: #f1f5f9; }
+
+    .btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    /* Reserves no space until it has something to say. */
+    .form__message {
+      display: none;
+      margin-bottom: 1.1rem;
+      padding: 0.7rem 0.85rem;
+      font-size: 0.85rem;
+      border-radius: 7px;
+      border: 1px solid transparent;
+    }
+
+    .form__message--error {
+      display: block;
+      color: var(--danger);
+      background: #fee2e2;
+      border-color: #fecaca;
+    }
+
+    .form__message--info {
+      display: block;
+      color: #92400e;
+      background: #fff3cd;
+      border-color: #fde68a;
+    }
+
+    .forgot__link {
+      display: block;
+      margin: -0.4rem 0 1.1rem;
+      font-size: 0.82rem;
+      text-align: right;
+      color: var(--text-light);
+      text-decoration: none;
+    }
+
+    .forgot__link:hover { color: var(--secondary-color); text-decoration: underline; }
+
+    .login__footer {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      text-align: center;
+      color: var(--text-light);
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 1rem; background-attachment: scroll; }
+      .login__card { padding: 2rem 1.25rem; }
+      .login__brand h1 { font-size: 1.15rem; }
     }
   </style>
 </head>
 
 <body>
 
+  <main class="login__card">
+    <div class="login__brand">
+      <img src="assets/logoo.png" alt="Vrinda Valley Resort logo">
+      <h1>Vrinda Valley Resort</h1>
+      <p>Admin Portal — authorised staff only</p>
+    </div>
 
+    <!-- role=alert so screen readers announce a failed attempt -->
+    <div id="formMessage" class="form__message" role="alert" aria-live="polite"></div>
 
-<div class="login-container">
-  <h2>Admin Login</h2>
+    <form id="loginForm" novalidate>
+      <div class="input__group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="admin@example.com"
+               autocomplete="username" required>
+      </div>
 
-  <form id="loginForm">
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button type="submit">Login</button>
-  </form>
-</div>
-<script>
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
+      <div class="input__group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="••••••••"
+               autocomplete="current-password" required>
+      </div>
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+      <a href="forgot-password.html" class="forgot__link">Forgot password?</a>
 
-  let res = await fetch("https://vrinda-backend-h8oz.onrender.com/api/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email, password })
-  });
+      <button type="submit" id="loginBtn" class="btn btn--primary">Login</button>
+      <button type="button" id="backBtn" class="btn btn--ghost">Back to Website</button>
+    </form>
 
-  let data = await res.json();
+    <p class="login__footer">&copy; Vrinda Valley Resort</p>
+  </main>
 
-  // ✅ STEP 6.4 (THIS IS THE MAIN LINE)
-  localStorage.setItem("token", data.token);
+  <script>
+    const form = document.getElementById("loginForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginBtn = document.getElementById("loginBtn");
+    const messageBox = document.getElementById("formMessage");
 
-  alert("Login successful");
+    let isSubmitting = false;
 
-  // redirect to admin page
-  window.location.href = "admin.html";
-});
-</script>
+    function showMessage(text, type) {
+      messageBox.textContent = text;
+      messageBox.className = "form__message form__message--" + (type || "error");
+    }
+
+    function clearMessage() {
+      messageBox.textContent = "";
+      messageBox.className = "form__message";
+    }
+
+    // e.g. "Your session has expired" handed over by the dashboard guard.
+    const notice = VVAuth.takeNotice();
+    if (notice) showMessage(notice, "info");
+
+    document.getElementById("backBtn").addEventListener("click", function () {
+      window.location.href = "index.html";
+    });
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (isSubmitting) return;
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showMessage("Please enter both your email and password.");
+        return;
+      }
+
+      isSubmitting = true;
+      loginBtn.disabled = true;
+      // The API is on a free tier that can cold-start, so say something.
+      loginBtn.textContent = "Signing in...";
+      clearMessage();
+
+      try {
+        await VVAuth.login(email, password);
+        VVAuth.clearLoginFailures();
+        // Token stored by VVAuth.login — replace() keeps login.html out of history.
+        window.location.replace("admin.html");
+      } catch (error) {
+        // Requirement 5: show the reason, stay on this page.
+        var baseMessage = error.message || "Login failed. Please try again.";
+        var failCount = VVAuth.recordLoginFailure();
+
+        // The server always returns the same generic message regardless of
+        // why the attempt failed (see authController.js) — that's what keeps
+        // an API-level attacker from telling "wrong password" apart from
+        // "account locked". This hint only reflects attempts THIS browser
+        // just made, so it's safe to show without weakening that protection.
+        if (failCount >= VVAuth.LOGIN_FAIL_HINT_THRESHOLD) {
+          showMessage(
+            baseMessage +
+              " You've had several failed attempts — for security, this account may now be " +
+              "temporarily locked. Wait about 15 minutes, or use \"Forgot password?\" below to reset it by email.",
+            "error"
+          );
+        } else {
+          showMessage(baseMessage);
+        }
+
+        passwordInput.value = "";
+        passwordInput.focus();
+        isSubmitting = false;
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Login";
+      }
+    });
+  </script>
 
 </body>
 </html>
