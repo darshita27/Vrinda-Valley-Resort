@@ -18,7 +18,7 @@ const OFFERS = [
     id: "weekend-escape",
     title: "Weekend Escape",
     badge: { text: "Best Seller", type: "status" },
-    image: "assets/rooms/premium-room-bed.jpg",
+    image: "assets/rooms/room-bedroom.png",
     price: "₹4,999",
     priceNote: "onwards",
     duration: "2 Days / 1 Night",

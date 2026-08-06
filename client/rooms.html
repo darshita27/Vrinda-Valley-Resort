@@ -51,7 +51,7 @@
     <!-- Dims the page and closes the mobile drawer when tapped outside it -->
     <div class="nav__backdrop" id="nav-backdrop"></div>
 
-    <header class="detail-hero" style="--detail-hero-image: url('assets/rooms/premium-room-bed.jpg');">
+    <header class="detail-hero" style="--detail-hero-image: url('assets/rooms/room-bedroom.png');">
       <div class="section__container detail-hero__content">
         <p class="section__subheader">ACCOMMODATIONS</p>
         <h1>Premium Rooms</h1>
@@ -108,12 +108,7 @@
           <p class="section__subheader">GALLERY</p>
           <h2 class="section__header">Inside A Premium Room</h2>
         </div>
-        <div class="detail-gallery">
-          <button type="button" class="detail-gallery__item" data-full="assets/rooms/premium-room-bed.jpg">
-            <img src="assets/rooms/premium-room-bed.jpg" alt="Premium room with king size bed and elegant interior" loading="lazy">
-            <span class="detail-gallery__zoom"><i class="ri-zoom-in-line"></i></span>
-          </button>
-        </div>
+        <div id="galleryRoot" class="gallery-root" data-gallery-page="rooms"></div>
       </div>
     </section>
 
@@ -244,6 +239,7 @@
     <div id="lightbox" class="lightbox">
       <button type="button" class="lightbox__prev" aria-label="Previous image"><i class="ri-arrow-left-s-line"></i></button>
       <img class="lightbox__img" src="" alt="">
+      <video class="lightbox__video" controls playsinline hidden></video>
       <button type="button" class="lightbox__next" aria-label="Next image"><i class="ri-arrow-right-s-line"></i></button>
       <button type="button" class="lightbox__close" aria-label="Close"><i class="ri-close-line"></i></button>
       <span class="lightbox__counter"></span>
@@ -251,6 +247,7 @@
 
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="main.js"></script>
+    <script src="gallery.js"></script>
 
   </body>
 </html>

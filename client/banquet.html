@@ -113,16 +113,7 @@
           <p class="section__subheader">GALLERY</p>
           <h2 class="section__header">Inside The Hall</h2>
         </div>
-        <div class="detail-gallery">
-          <button type="button" class="detail-gallery__item" data-full="assets/banquet/hall-ceremony-setup.jpg">
-            <img src="assets/banquet/hall-ceremony-setup.jpg" alt="Banquet hall set up for a wedding ceremony with floral backdrop" loading="lazy">
-            <span class="detail-gallery__zoom"><i class="ri-zoom-in-line"></i></span>
-          </button>
-          <button type="button" class="detail-gallery__item" data-full="assets/banquet/hall-empty-seating.jpg">
-            <img src="assets/banquet/hall-empty-seating.jpg" alt="Banquet hall interior with rows of guest seating" loading="lazy">
-            <span class="detail-gallery__zoom"><i class="ri-zoom-in-line"></i></span>
-          </button>
-        </div>
+        <div id="galleryRoot" class="gallery-root" data-gallery-page="banquet"></div>
       </div>
     </section>
 
@@ -253,6 +244,7 @@
     <div id="lightbox" class="lightbox">
       <button type="button" class="lightbox__prev" aria-label="Previous image"><i class="ri-arrow-left-s-line"></i></button>
       <img class="lightbox__img" src="" alt="">
+      <video class="lightbox__video" controls playsinline hidden></video>
       <button type="button" class="lightbox__next" aria-label="Next image"><i class="ri-arrow-right-s-line"></i></button>
       <button type="button" class="lightbox__close" aria-label="Close"><i class="ri-close-line"></i></button>
       <span class="lightbox__counter"></span>
@@ -260,6 +252,7 @@
 
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="main.js"></script>
+    <script src="gallery.js"></script>
 
   </body>
 </html>

@@ -100,28 +100,7 @@
           <p class="section__subheader">GALLERY</p>
           <h2 class="section__header">Poolside Views</h2>
         </div>
-        <div class="detail-gallery">
-          <button type="button" class="detail-gallery__item" data-full="assets/pool/pool-night-1.jpg">
-            <img src="assets/pool/pool-night-1.jpg" alt="Swimming pool lit up with blue and purple lighting at night" loading="lazy">
-            <span class="detail-gallery__zoom"><i class="ri-zoom-in-line"></i></span>
-          </button>
-          <button type="button" class="detail-gallery__item" data-full="assets/pool/pool-night-2.jpg">
-            <img src="assets/pool/pool-night-2.jpg" alt="Swimming pool with colourful night lighting and reflections" loading="lazy">
-            <span class="detail-gallery__zoom"><i class="ri-zoom-in-line"></i></span>
-          </button>
-          <button type="button" class="detail-gallery__item" data-full="assets/pool/pool-night-3.jpg">
-            <img src="assets/pool/pool-night-3.jpg" alt="Resort building and pool area lit up at night" loading="lazy">
-            <span class="detail-gallery__zoom"><i class="ri-zoom-in-line"></i></span>
-          </button>
-          <button type="button" class="detail-gallery__item" data-full="assets/pool/pool-night-4.jpg">
-            <img src="assets/pool/pool-night-4.jpg" alt="Resort exterior and poolside area illuminated at night" loading="lazy">
-            <span class="detail-gallery__zoom"><i class="ri-zoom-in-line"></i></span>
-          </button>
-          <button type="button" class="detail-gallery__item" data-full="assets/pool/pool-night-5.jpg">
-            <img src="assets/pool/pool-night-5.jpg" alt="Resort and pool area with festive lighting at night" loading="lazy">
-            <span class="detail-gallery__zoom"><i class="ri-zoom-in-line"></i></span>
-          </button>
-        </div>
+        <div id="galleryRoot" class="gallery-root" data-gallery-page="pool"></div>
       </div>
     </section>
 
@@ -267,6 +246,7 @@
     <div id="lightbox" class="lightbox">
       <button type="button" class="lightbox__prev" aria-label="Previous image"><i class="ri-arrow-left-s-line"></i></button>
       <img class="lightbox__img" src="" alt="">
+      <video class="lightbox__video" controls playsinline hidden></video>
       <button type="button" class="lightbox__next" aria-label="Next image"><i class="ri-arrow-right-s-line"></i></button>
       <button type="button" class="lightbox__close" aria-label="Close"><i class="ri-close-line"></i></button>
       <span class="lightbox__counter"></span>
@@ -274,6 +254,7 @@
 
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="main.js"></script>
+    <script src="gallery.js"></script>
 
   </body>
 </html>

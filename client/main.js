@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
   initAutoHideNav();
   initScrollReveal();
   initPopupBanner();
-  initDetailGallery();
 });
 
 /* ------------------------------------------------------------------ *
@@ -463,18 +462,66 @@ function initActiveNav() {
 
   const currentPage = pageNameFromPath(window.location.pathname);
 
+  // Page-level links (Contact, Offers, Book Now, ...) get a static "active"
+  // class based on which page we're on. The homepage's own in-page section
+  // links (#home/#about/#room/...) are handled separately below by
+  // initHomeScrollSpy, since "current page" can't say which section is
+  // actually in view.
   navLinks.forEach((link) => {
     const href = link.getAttribute("href") || "";
-    if (href.startsWith("#") && href !== "#home") return;
+    if (href.startsWith("#")) return;
 
     const path = href.split("#")[0].split("?")[0];
-    const linkedPage = path ? pageNameFromPath(path) : "index"; // "" only for exactly "#home"
+    const linkedPage = path ? pageNameFromPath(path) : "index";
 
     if (linkedPage === currentPage) {
       link.classList.add("active");
       link.setAttribute("aria-current", "page");
     }
   });
+
+  if (currentPage === "index") initHomeScrollSpy(navLinks);
+}
+
+/**
+ * Highlights whichever homepage section is actually in view as the guest
+ * scrolls, instead of leaving "Home" permanently active. Falls back to a
+ * fixed "Home" highlight if IntersectionObserver isn't available.
+ */
+function initHomeScrollSpy(navLinks) {
+  const sectionLinks = Array.from(navLinks).filter((link) => (link.getAttribute("href") || "").startsWith("#"));
+  const sections = sectionLinks
+    .map((link) => ({ link, el: document.getElementById(link.getAttribute("href").slice(1)) }))
+    .filter((entry) => entry.el);
+
+  function setActive(id) {
+    sectionLinks.forEach((link) => {
+      const isActive = link.getAttribute("href") === `#${id}`;
+      link.classList.toggle("active", isActive);
+      if (isActive) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
+  if (!sections.length || !("IntersectionObserver" in window)) {
+    setActive("home");
+    return;
+  }
+
+  // A thin horizontal band near the top of the viewport — whichever tracked
+  // section is currently crossing it counts as "in view".
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting);
+      if (!visible.length) return;
+      const topMost = visible.reduce((a, b) => (a.boundingClientRect.top < b.boundingClientRect.top ? a : b));
+      setActive(topMost.target.id);
+    },
+    { rootMargin: "-20% 0px -70% 0px", threshold: 0 }
+  );
+
+  sections.forEach(({ el }) => observer.observe(el));
+  setActive("home");
 }
 
 function initNavMenu() {
@@ -582,67 +629,6 @@ function initScrollReveal() {
   ScrollReveal().reveal(".detail-gallery__item", { ...scrollRevealOption, interval: 150 });
   ScrollReveal().reveal(".feature-item", { ...scrollRevealOption, interval: 100 });
   ScrollReveal().reveal(".spec-chip", { ...scrollRevealOption, interval: 100 });
-}
-
-/**
- * Lightbox for .detail-gallery__item thumbnails, shared by banquet.html,
- * rooms.html and pool.html. No-ops if the page has no gallery/lightbox.
- */
-function initDetailGallery() {
-  const galleryItems = document.querySelectorAll(".detail-gallery__item");
-  const lightbox = document.getElementById("lightbox");
-  if (galleryItems.length === 0 || !lightbox) return;
-
-  const lightboxImg = lightbox.querySelector(".lightbox__img");
-  const counter = lightbox.querySelector(".lightbox__counter");
-  const closeBtn = lightbox.querySelector(".lightbox__close");
-  const prevBtn = lightbox.querySelector(".lightbox__prev");
-  const nextBtn = lightbox.querySelector(".lightbox__next");
-
-  const images = Array.from(galleryItems).map((item) => {
-    const img = item.querySelector("img");
-    return { src: item.dataset.full || img.src, alt: img.alt || "" };
-  });
-
-  let currentIndex = 0;
-
-  function show(index) {
-    currentIndex = (index + images.length) % images.length;
-    lightboxImg.src = images[currentIndex].src;
-    lightboxImg.alt = images[currentIndex].alt;
-    if (counter) counter.textContent = `${currentIndex + 1} / ${images.length}`;
-  }
-
-  function open(index) {
-    show(index);
-    lightbox.classList.add("is-open");
-    document.body.classList.add("lightbox-open");
-  }
-
-  function close() {
-    lightbox.classList.remove("is-open");
-    document.body.classList.remove("lightbox-open");
-  }
-
-  galleryItems.forEach((item, index) => {
-    item.addEventListener("click", () => open(index));
-  });
-
-  if (closeBtn) closeBtn.addEventListener("click", close);
-  if (prevBtn) prevBtn.addEventListener("click", () => show(currentIndex - 1));
-  if (nextBtn) nextBtn.addEventListener("click", () => show(currentIndex + 1));
-
-  // Click on the dark backdrop (not the image or controls) closes it.
-  lightbox.addEventListener("click", (event) => {
-    if (event.target === lightbox) close();
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (!lightbox.classList.contains("is-open")) return;
-    if (event.key === "Escape") close();
-    if (event.key === "ArrowLeft") show(currentIndex - 1);
-    if (event.key === "ArrowRight") show(currentIndex + 1);
-  });
 }
 
 function initPopupBanner() {
