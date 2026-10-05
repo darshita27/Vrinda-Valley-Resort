@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Cormorant Garamond', serif;
+  --color-gold-50: #fdf8ec;
+  --color-gold-200: #f0dca6;
+  --color-gold-400: #d4af37;
+  --color-gold-500: #b8942c;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #fff;
+}
+
+.font-serif {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* ---------- Premium type ---------- */
+.display {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.gold-text {
+  background: linear-gradient(100deg, #f0dca6 0%, #d4af37 45%, #f7e9bd 70%, #c9a227 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+}
+
+/* ---------- Scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1);
+  will-change: opacity, transform;
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes kenburns {
+  0%   { transform: scale(1.06) translate3d(0,0,0); }
+  100% { transform: scale(1.16) translate3d(0,-1.5%,0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pingSlow {
+  0%        { transform: scale(1);   opacity: .5; }
+  70%, 100% { transform: scale(1.7); opacity: 0; }
+}
+.animate-ping-slow { animation: pingSlow 2.6s cubic-bezier(0,0,.2,1) infinite; }
+.kenburns { animation: kenburns 22s ease-out forwards; }
+
+/* ---------- Shimmer CTA ---------- */
+.btn-gold {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(100deg, #e8c766, #d4af37 45%, #c9a227);
+}
+.btn-gold::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: shimmer 3.6s infinite;
+}
+
+/* ---------- Glass ---------- */
+.glass {
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+/* ---------- Grain overlay ---------- */
+.grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .22;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+
+/* ---------- Scrollbars ---------- */
+.chat-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+.chat-scroll::-webkit-scrollbar-track { background: transparent; }
+.chat-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 99px; }
+.chat-scroll::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+
+body::-webkit-scrollbar { width: 10px; }
+body::-webkit-scrollbar-track { background: #faf9f7; }
+body::-webkit-scrollbar-thumb { background: linear-gradient(#d4af37, #b8942c); border-radius: 99px; }
+
+/* ---------- Card hover lift ---------- */
+.lift {
+  transition: transform .6s cubic-bezier(.16,1,.3,1), box-shadow .6s cubic-bezier(.16,1,.3,1);
+}
+.lift:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 30px 60px -22px rgba(6,42,30,.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}
