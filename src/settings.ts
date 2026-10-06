@@ -58,7 +58,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   hours: "Reception open 24 × 7",
   checkIn: "2:00 PM",
   checkOut: "11:00 AM",
-  instagram: "vrindavalleyresort",
+  instagram: "vrindavalleyresortjaipur",
   facebook: "",
   youtube: "",
   mapQuery:

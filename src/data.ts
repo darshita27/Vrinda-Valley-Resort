@@ -175,8 +175,8 @@ export const CONTACT = {
   /** WhatsApp business number (digits only, with country code) */
   whatsapp: "919530429585",
   email: "vrindavalleyjaipur@gmail.com",
-  instagram: "vrindavalleyresort",
-  instagramUrl: "https://instagram.com/vrindavalleyresort",
+  instagram: "vrindavalleyresortjaipur",
+  instagramUrl: "https://instagram.com/vrindavalleyresortjaipur",
   address:
     "Vrinda Valley, Diggi Malpura Rd, Bagran Ka Bam, Balawala, Hargun Ki Nangal at Charanwala, Rajasthan 303904",
   addressShort: "Diggi Malpura Rd, Balawala, Jaipur, Rajasthan 303904",
