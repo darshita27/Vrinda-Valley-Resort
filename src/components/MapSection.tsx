@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { MAP, CONTACT } from "../data";
 import Reveal from "./Reveal";
+import { mapLinks, telHref } from "../settings";
+import type { ContentStore } from "../store";
 
-export default function MapSection() {
+export default function MapSection({ store }: { store: ContentStore }) {
   const [loaded, setLoaded] = useState(false);
+  const s = store.settings;
+  const MAP = mapLinks(s);
 
   const routes = [
     { icon: "✈️", label: "Jaipur International Airport", note: "Direct flights from all metros" },
@@ -60,7 +63,7 @@ export default function MapSection() {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(212,175,55,.16),transparent_60%)]" />
               <div className="relative flex-1">
                 <h3 className="font-serif text-2xl mb-2">Vrinda Valley Resort</h3>
-                <p className="text-white/60 text-sm mb-7 font-light">{CONTACT.address}</p>
+                <p className="text-white/60 text-sm mb-7 font-light">{s.address}</p>
 
                 <div className="gold-rule mb-7" />
 
@@ -98,7 +101,7 @@ export default function MapSection() {
                     View on Maps
                   </a>
                   <a
-                    href={`tel:${CONTACT.phone.replace(/\s/g, "")}`}
+                    href={telHref(s.phone)}
                     className="glass text-white text-[13px] py-3 rounded-full text-center hover:bg-white/15 transition-all"
                   >
                     📞 Call Us

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { respond, renderRich, emptyBooking, SUGGESTIONS, type BookingState, type Lead } from "../agent/engine";
-import { CONTACT } from "../data";
+import { getSettings, telHref } from "../settings";
 import { sendToWhatsApp, whatsappLink, whatsappChat } from "../whatsapp";
 
 type Msg = {
@@ -27,9 +27,11 @@ const WELCOME: Msg = {
 export default function AiConcierge({
   onOpenBooking,
   onLead,
+  custom = [],
 }: {
   onOpenBooking: () => void;
   onLead?: (lead: Lead) => void;
+  custom?: { id: string; keywords: string; answer: string; chips: string; enabled: boolean }[];
 }) {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([WELCOME]);
@@ -71,7 +73,7 @@ export default function AiConcierge({
     setTyping(true);
 
     // human-like variable delay based on answer length
-    const { reply, booking: nextBooking } = respond(text, booking);
+    const { reply, booking: nextBooking } = respond(text, booking, custom);
     const delay = Math.min(1500, 450 + reply.text.length * 3.2);
 
     setTimeout(() => {
@@ -107,7 +109,7 @@ export default function AiConcierge({
       return;
     }
     if (chip.includes("Call")) {
-      window.location.href = `tel:${CONTACT.phoneRaw}`;
+      window.location.href = telHref(getSettings().phone);
       return;
     }
     if (chip === "Open map") {
@@ -136,7 +138,7 @@ export default function AiConcierge({
   return (
     <>
       {/* Launcher */}
-      <div className="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-3">
+      <div className="fixed bottom-[5.5rem] md:bottom-6 right-4 md:right-6 z-[90] flex flex-col items-end gap-3">
         {nudge && !open && (
           <div className="bg-white rounded-2xl rounded-br-sm shadow-2xl px-4 py-3 max-w-[230px] text-sm text-stone-700 border border-stone-100 animate-[fadeUp_.4s_ease]">
             <span className="font-medium text-emerald-900">Need help?</span> Ask me about rooms or
@@ -164,7 +166,7 @@ export default function AiConcierge({
           open
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-6 pointer-events-none"
-        } bottom-28 right-6 w-[calc(100vw-3rem)] sm:w-[400px] h-[clamp(420px,70vh,620px)]`}
+        } bottom-[9.5rem] md:bottom-28 right-4 md:right-6 w-[calc(100vw-2rem)] sm:w-[400px] h-[min(70svh,560px)] md:h-[clamp(420px,70vh,620px)]`}
       >
         <div className="flex flex-col h-full bg-white rounded-3xl shadow-[0_30px_80px_-20px_rgba(0,0,0,.45)] overflow-hidden border border-stone-200/70">
           {/* Header */}
@@ -338,8 +340,8 @@ export default function AiConcierge({
                 WhatsApp
               </a>{" "}
               ·{" "}
-              <a href={`tel:${CONTACT.phoneRaw}`} className="text-emerald-700 font-medium">
-                {CONTACT.phone}
+              <a href={telHref(getSettings().phone)} className="text-emerald-700 font-medium">
+                {getSettings().phone}
               </a>
             </div>
           </div>

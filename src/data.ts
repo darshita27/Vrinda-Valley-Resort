@@ -1,20 +1,39 @@
-const RAW =
-  "https://raw.githubusercontent.com/darshita27/Vrinda-Valley-Resort/main/client/assets";
+import { asset } from "./settings";
 
-/** Real photography from the Vrinda Valley Resort repository */
-export const IMG = {
-  logo: `${RAW}/logoo.png`,
-  hero: `${RAW}/header_img.png`,
-  about1: `${RAW}/about_01.jpeg`,
-  about2: `${RAW}/about_1.jpeg`,
-  about3: `${RAW}/about_3rd.png`,
-  banquetSetup: `${RAW}/banquet/hall-ceremony-setup.jpg`,
-  banquetStage: `${RAW}/banquet/hall-ceremony-stage.png`,
-  banquetSeating: `${RAW}/banquet/hall-empty-seating.jpg`,
-  kitchen1: `${RAW}/kitchen/kitchen-1.jpg`,
-  kitchen2: `${RAW}/kitchen/kitchen-2.jpg`,
-  garden: `${RAW}/Garden/IMG_0547.PNG`,
-};
+/** Relative asset paths inside the resort's photo archive. */
+export const PATHS = {
+  logo: "logo.png",
+  logoAlt: "Loogo.png",
+  logoMark: "logoo.png",
+  hero: "header_img.png",
+  about1: "about_01.jpeg",
+  about2: "about_1.jpeg",
+  about3: "about_3rd.png",
+  banquetSetup: "banquet/hall-ceremony-setup.jpg",
+  banquetStage: "banquet/hall-ceremony-stage.png",
+  banquetSeating: "banquet/hall-empty-seating.jpg",
+  kitchen1: "kitchen/kitchen-1.jpg",
+  kitchen2: "kitchen/kitchen-2.jpg",
+  garden: "Garden/IMG_0547.PNG",
+  poolHero: "pool/pool-hero.png",
+  poolNight1: "pool/pool-night-1.jpg",
+  poolNight2: "pool/pool-night-2.jpg",
+  poolNight3: "pool/pool-night-3.jpg",
+  poolNight5: "pool/pool-night-5.jpg",
+  poolNight7: "pool/pool-night-7.jpg",
+} as const;
+
+type Key = keyof typeof PATHS;
+
+/** Primary (CDN) URL for each photo. */
+export const IMG = Object.fromEntries(
+  (Object.keys(PATHS) as Key[]).map((k) => [k, asset(PATHS[k]).src])
+) as Record<Key, string>;
+
+/** Full resilient source chain for each photo (CDN → raw → local). */
+export const IMG_CHAIN = Object.fromEntries(
+  (Object.keys(PATHS) as Key[]).map((k) => [k, asset(PATHS[k]).fallback])
+) as Record<Key, string[]>;
 
 /** Graceful fallbacks if a repo asset is unavailable */
 export const FALLBACK = {
@@ -115,7 +134,7 @@ export const SPACES = [
     points: ["Stage & Lighting", "Flexible Seating", "Event Coordination"],
   },
   {
-    img: IMG.about3,
+    img: IMG.poolHero,
     fallback: FALLBACK.pool,
     tag: "Poolside",
     title: "Swimming Pool & Parties",
@@ -151,6 +170,8 @@ export const SPACES = [
 export const CONTACT = {
   phone: "+91 95304 29585",
   phoneRaw: "+919530429585",
+  phone2: "+91 95711 98339",
+  phone2Raw: "+919571198339",
   /** WhatsApp business number (digits only, with country code) */
   whatsapp: "919530429585",
   email: "vrindavalleyjaipur@gmail.com",
@@ -212,18 +233,19 @@ export const SEO = {
 };
 
 /* ---------------- Resort moments (gallery of real celebrations) ---------------- */
+/** Only used for neutral guest avatars — all resort photography is from the repo. */
 const PX = "https://images.pexels.com/photos";
-const q = "?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1100";
 
+/** Real resort moments — all photos from the Vrinda Valley Resort archive */
 export const MOMENTS = [
-  { src: `${PX}/32679917/pexels-photo-32679917.jpeg${q}`, caption: "Phera ceremony in the banquet hall", tag: "Wedding" },
-  { src: `${PX}/8155771/pexels-photo-8155771.jpeg${q}`, caption: "Baraat arriving at the main entrance", tag: "Baraat" },
-  { src: `${PX}/6593858/pexels-photo-6593858.jpeg${q}`, caption: "Mehndi morning in the gardens", tag: "Mehndi" },
-  { src: `${PX}/25742763/pexels-photo-25742763.jpeg${q}`, caption: "Pre-wedding shoot by the poolside", tag: "Pre-Wedding" },
-  { src: `${PX}/27286970/pexels-photo-27286970.jpeg${q}`, caption: "Petal shower at the reception", tag: "Reception" },
-  { src: `${PX}/13548896/pexels-photo-13548896.jpeg${q}`, caption: "Couple portraits on the lawn", tag: "Portraits" },
-  { src: `${PX}/13078094/pexels-photo-13078094.jpeg${q}`, caption: "Sangeet night celebrations", tag: "Sangeet" },
-  { src: `${PX}/37437629/pexels-photo-37437629.jpeg${q}`, caption: "Ring ceremony under the lights", tag: "Engagement" },
+  { src: IMG.banquetSetup, caption: "Ceremony setup in the banquet hall", tag: "Wedding" },
+  { src: IMG.poolNight3, caption: "Poolside lit up for an evening party", tag: "Pool Party" },
+  { src: IMG.garden, caption: "Landscaped gardens in full bloom", tag: "Gardens" },
+  { src: IMG.banquetSeating, caption: "Banquet hall ready for guests", tag: "Banquet" },
+  { src: IMG.poolHero, caption: "The swimming pool at golden hour", tag: "Poolside" },
+  { src: IMG.kitchen2, caption: "Fresh preparations in our gourmet kitchen", tag: "Kitchen" },
+  { src: IMG.poolNight2, caption: "Vibrant lighting around the pool deck", tag: "Night" },
+  { src: IMG.about3, caption: "Resort grounds and open spaces", tag: "Resort" },
 ];
 
 /* ---------------- Seeded guest reviews (Jaipur / Rajasthan) ---------------- */
@@ -252,7 +274,7 @@ export const SEED_REVIEWS: Review[] = [
     date: "Dec 2025",
     approved: true,
     avatar: AV("38624436"),
-    photo: `${PX}/32679917/pexels-photo-32679917.jpeg${q}`,
+    photo: IMG.banquetSetup,
     text:
       "We booked Vrinda Valley for our wedding after seeing three other venues in Jaipur — and honestly nothing came close. The banquet hall decor, the lighting, the garden setup for mehndi… everything was flawless. All 16 rooms were given to our family so nobody had to travel. Best decision we made.",
   },
@@ -265,7 +287,7 @@ export const SEED_REVIEWS: Review[] = [
     date: "Nov 2025",
     approved: true,
     avatar: AV("38624435"),
-    photo: `${PX}/8155771/pexels-photo-8155771.jpeg${q}`,
+    photo: IMG.banquetSeating,
     text:
       "Humne apne bete ki shaadi yahan ki. Staff ka behaviour bahut hi acha tha, khana lajawab, aur parking ki bhi koi dikkat nahi hui. Baraat ke liye entrance bilkul perfect hai. Rajasthani hospitality ka asli example hai ye resort.",
   },
@@ -278,7 +300,7 @@ export const SEED_REVIEWS: Review[] = [
     date: "Oct 2025",
     approved: true,
     avatar: AV("38624440"),
-    photo: `${PX}/25742763/pexels-photo-25742763.jpeg${q}`,
+    photo: IMG.poolNight3,
     text:
       "Had my birthday pool party here with 40 friends. The lighting around the pool in the evening was gorgeous, music setup was handled by their team, and the food kept coming. Super clean pool and the staff were genuinely attentive all night.",
   },
@@ -291,7 +313,7 @@ export const SEED_REVIEWS: Review[] = [
     date: "Sep 2025",
     approved: true,
     avatar: AV("3890576"),
-    photo: `${PX}/13548896/pexels-photo-13548896.jpeg${q}`,
+    photo: IMG.garden,
     text:
       "Came for a quiet weekend away from the city. The rooms are spacious, AC and hot water worked perfectly, and the gardens in the morning are so peaceful. Close enough to Jaipur that we drove into the city for a day and came back by evening.",
   },
@@ -316,7 +338,7 @@ export const SEED_REVIEWS: Review[] = [
     date: "Jul 2025",
     approved: true,
     avatar: AV("21642977"),
-    photo: `${PX}/27286970/pexels-photo-27286970.jpeg${q}`,
+    photo: IMG.banquetStage,
     text:
       "Looking for a wedding resort in Jaipur that doesn't cost a fortune but still feels premium? This is it. We hosted a 400-guest reception. The event coordinator was on top of everything and the kitchen handled our custom Marwari menu beautifully.",
   },
@@ -346,7 +368,7 @@ export const SEED_STORIES: Story[] = [
     body:
       "Jaipur has quietly become the number one choice for destination weddings in India, and it isn't hard to see why. The city blends royal Rajasthani heritage with modern connectivity — a direct flight from almost every metro, a well-connected railway network, and highways that make the drive from Delhi comfortable.\n\nWhen couples search for a destination wedding venue in Jaipur, three things matter most: guest accommodation on site, a banquet hall that can be styled to any theme, and outdoor space for daytime functions like mehndi and haldi.\n\nAt Vrinda Valley Resort we built exactly around those three needs. Sixteen rooms mean your closest family stays where they celebrate. Our grand banquet hall handles everything from an intimate engagement to a full reception. And our landscaped gardens give you the open-air Rajasthani setting that photographs beautifully in winter light.\n\nThe best season runs from October through March. Book six to nine months ahead for peak dates.",
     keywords: ["destination wedding Jaipur", "wedding venue Jaipur", "Rajasthan wedding"],
-    cover: `${PX}/25742763/pexels-photo-25742763.jpeg${q}`,
+    cover: IMG.banquetSetup,
     author: "Vrinda Valley Team",
     date: "2026-01-12",
     published: true,
@@ -360,7 +382,7 @@ export const SEED_STORIES: Story[] = [
     body:
       "Pool parties have become the go-to format for birthdays, bachelorettes and casual corporate celebrations in Jaipur. They're relaxed, photogenic, and work brilliantly in Rajasthan's climate for most of the year.\n\nHere's what actually matters when planning one.\n\n**Timing.** Late afternoon into evening is ideal — you get golden hour for photos and cooler air for dancing. Avoid peak May afternoons.\n\n**Lighting.** This is the single biggest upgrade. Warm string lights around the pool perimeter plus a few colour washes completely transform the space after sunset.\n\n**Food flow.** Live counters work far better than a fixed buffet at a pool party. Guests graze rather than sit.\n\n**Safety.** Make sure your venue maintains proper water treatment and has staff on duty. At Vrinda Valley, our pool is maintained daily and our team stays present through the event.\n\n**Sound.** Check whether your venue has in-house sound or whether you need to bring a DJ. We handle both.",
     keywords: ["pool party Jaipur", "resort with swimming pool Jaipur", "birthday venue Jaipur"],
-    cover: `${PX}/261101/pexels-photo-261101.jpeg${q}`,
+    cover: IMG.poolNight3,
     author: "Vrinda Valley Team",
     date: "2026-01-04",
     published: true,
@@ -374,7 +396,7 @@ export const SEED_STORIES: Story[] = [
     body:
       "The best weekend getaway near Jaipur isn't necessarily the furthest one. Spending five hours in a car on a two-day trip defeats the point.\n\nWhat you actually want is somewhere green, quiet and close enough that you arrive relaxed. A resort with a pool, proper air-conditioned rooms, gardens to walk in, and a kitchen that serves fresh food on request.\n\nA good two-night itinerary looks like this. Arrive Friday evening, have dinner outdoors, sleep in. Spend Saturday entirely at the resort — pool in the morning, long lunch, gardens in the evening. Drive into Jaipur on Sunday morning for Amer Fort or the markets, then head home.\n\nThat rhythm gives you genuine rest plus a taste of the city, without the exhaustion of a long highway drive.",
     keywords: ["weekend getaway near Jaipur", "resort near Jaipur", "day outing Jaipur"],
-    cover: `${PX}/12387874/pexels-photo-12387874.jpeg${q}`,
+    cover: IMG.garden,
     author: "Vrinda Valley Team",
     date: "2025-12-20",
     published: true,

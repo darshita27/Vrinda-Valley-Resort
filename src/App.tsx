@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { NAV, FEATURES, EVENTS, SPACES, CONTACT } from "./data";
+import { NAV, FEATURES, EVENTS, SPACES, IMG } from "./data";
+
+const IMG_LOGO = IMG.logo;
 import BookingModal from "./components/BookingModal";
 import AiConcierge from "./components/AiConcierge";
 import Reveal from "./components/Reveal";
@@ -11,6 +13,7 @@ import { useContentStore, type ContentStore } from "./store";
 import { applySeo } from "./seo";
 import { whatsappChat, sendToWhatsApp } from "./whatsapp";
 import MediaImg from "./components/MediaImg";
+import { instaUrl, telHref } from "./settings";
 
 /* ---------------- shared bits ---------------- */
 
@@ -50,29 +53,34 @@ function GoldBtn({
   );
 }
 
-function GhostBtn({ children, href, onClick }: { children: React.ReactNode; href?: string; onClick?: () => void }) {
-  const cls =
-    "inline-flex items-center justify-center glass text-white text-sm tracking-wide px-9 py-4 rounded-full transition-all duration-300 hover:bg-white/15 hover:border-white/40";
+function GhostBtn({
+  children, href, onClick, className = "",
+}: { children: React.ReactNode; href?: string; onClick?: () => void; className?: string }) {
+  const cls = `inline-flex items-center justify-center glass text-white text-sm tracking-wide px-9 py-4 rounded-full transition-all duration-300 hover:bg-white/15 hover:border-white/40 ${className}`;
   return href ? <a href={href} className={cls}>{children}</a> : <button onClick={onClick} className={cls}>{children}</button>;
 }
 
-function Monogram({ size = 44 }: { size?: number }) {
-  return (
-    <div
-      className="rounded-full p-[1.5px] bg-gradient-to-br from-gold-200 via-gold-400 to-gold-500 shrink-0"
-      style={{ width: size, height: size }}
-    >
-      <div className="w-full h-full rounded-full bg-emerald-950 flex items-center justify-center">
-        <span className="font-serif text-gold-200" style={{ fontSize: size * 0.45 }}>V</span>
-      </div>
-    </div>
-  );
-}
+/** Official resort logo, with a graceful monogram fallback. */
+function Logo({ dark = false, store }: { dark?: boolean; store?: ContentStore }) {
+  const [failed, setFailed] = useState(false);
+  const src = store ? store.img("brand.logo") : IMG_LOGO;
 
-function Logo({ dark = false }: { dark?: boolean }) {
   return (
     <a href="#home" className="flex items-center gap-3 group">
-      <Monogram size={42} />
+      {failed ? (
+        <div className="rounded-full p-[1.5px] bg-gradient-to-br from-gold-200 via-gold-400 to-gold-500 shrink-0 w-[46px] h-[46px]">
+          <div className="w-full h-full rounded-full bg-emerald-950 flex items-center justify-center">
+            <span className="font-serif text-gold-200 text-xl">V</span>
+          </div>
+        </div>
+      ) : (
+        <img
+          src={src}
+          alt="Vrinda Valley Resort logo"
+          onError={() => setFailed(true)}
+          className="w-[46px] h-[46px] object-contain shrink-0 drop-shadow-[0_2px_6px_rgba(0,0,0,.4)]"
+        />
+      )}
       <div className="leading-none">
         <div className={`font-serif text-[22px] tracking-wide ${dark ? "text-stone-900" : "text-white"}`}>
           Vrinda Valley
@@ -87,7 +95,7 @@ function Logo({ dark = false }: { dark?: boolean }) {
 
 /* ---------------- nav ---------------- */
 
-function Nav({ onBook }: { onBook: () => void }) {
+function Nav({ onBook, store }: { onBook: () => void; store: ContentStore }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("home");
@@ -108,6 +116,12 @@ function Nav({ onBook }: { onBook: () => void }) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // lock background scroll while the mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-[80] transition-all duration-500 ${
@@ -117,7 +131,7 @@ function Nav({ onBook }: { onBook: () => void }) {
       }`}
     >
       <div className="max-w-[1340px] mx-auto px-6 flex items-center justify-between">
-        <Logo />
+        <Logo store={store} />
 
         <nav className="hidden lg:flex items-center gap-9">
           {NAV.map((l) => {
@@ -151,13 +165,28 @@ function Nav({ onBook }: { onBook: () => void }) {
       <div className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-gold-200 to-gold-500 transition-[width] duration-150" style={{ width: `${progress}%` }} />
 
       {open && (
-        <div className="lg:hidden bg-emerald-950/98 backdrop-blur-xl mt-3 px-6 py-7 border-t border-emerald-800/60 flex flex-col gap-5">
+        <div className="lg:hidden bg-emerald-950/98 backdrop-blur-xl mt-3 px-6 py-6 border-t border-emerald-800/60 flex flex-col gap-1 max-h-[calc(100svh-5rem)] overflow-y-auto chat-scroll">
           {NAV.map((l) => (
-            <a key={l.label} href={l.href} onClick={() => setOpen(false)} className="text-white/90 hover:text-gold-200 tracking-wide">
+            <a
+              key={l.label}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="text-white/90 active:text-gold-200 tracking-wide py-3 border-b border-white/5 text-[15px]"
+            >
               {l.label}
             </a>
           ))}
-          <GoldBtn onClick={() => { setOpen(false); onBook(); }}>Book Now</GoldBtn>
+          <div className="flex gap-3 pt-5">
+            <a
+              href={whatsappChat()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white font-semibold py-3.5 rounded-full text-sm"
+            >
+              <WaIcon className="w-4 h-4 fill-current" /> WhatsApp
+            </a>
+            <GoldBtn onClick={() => { setOpen(false); onBook(); }} className="flex-1 !px-4">Book Now</GoldBtn>
+          </div>
         </div>
       )}
     </header>
@@ -167,22 +196,23 @@ function Nav({ onBook }: { onBook: () => void }) {
 /* ---------------- hero ---------------- */
 
 function Hero({ onBook, store }: { onBook: () => void; store: ContentStore }) {
+  const s = store.settings;
   return (
     <section id="home" className="relative min-h-[100svh] flex items-center grain overflow-hidden">
       <div className="absolute inset-0 kenburns">
         <MediaImg store={store} id="hero" alt="Vrinda Valley Resort Jaipur" className="w-full h-full object-cover" />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/80 via-emerald-950/45 to-emerald-950/95" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(2,22,16,.75)_100%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/85 via-emerald-950/55 to-emerald-950/96" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(2,22,16,.8)_100%)]" />
 
-      <div className="relative z-10 max-w-[1340px] mx-auto px-6 pt-36 pb-44 w-full">
+      <div className="relative z-10 max-w-[1340px] mx-auto px-5 sm:px-6 pt-28 sm:pt-36 pb-32 sm:pb-44 w-full">
         <div className="max-w-4xl">
           <Reveal>
-            <Kicker text="Luxury Resort · Jaipur, Rajasthan" light />
+            <Kicker text={s.tagline} light />
           </Reveal>
 
           <Reveal delay={120}>
-            <h1 className="display text-white text-[13vw] sm:text-7xl lg:text-[6.2rem] leading-[0.98] mb-8">
+            <h1 className="display text-white text-[2.9rem] xs:text-5xl sm:text-6xl lg:text-[6rem] leading-[1.02] sm:leading-[0.98] mb-6 sm:mb-8 drop-shadow-[0_4px_24px_rgba(0,0,0,.55)]">
               Where Celebrations
               <br />
               <span className="italic gold-text">Become Legacy</span>
@@ -190,30 +220,63 @@ function Hero({ onBook, store }: { onBook: () => void; store: ContentStore }) {
           </Reveal>
 
           <Reveal delay={240}>
-            <p className="text-lg md:text-xl text-white/80 max-w-2xl mb-11 leading-relaxed font-light">
+            <p className="text-base sm:text-lg md:text-xl text-white/85 max-w-2xl mb-8 sm:mb-11 leading-relaxed font-light">
               From luxurious rooms to a grand banquet hall and poolside celebrations — your perfect
               getaway is just a booking away.
             </p>
           </Reveal>
 
           <Reveal delay={340}>
-            <div className="flex flex-wrap gap-4">
-              <GoldBtn onClick={onBook}>Reserve Your Stay</GoldBtn>
-              <GhostBtn href="#events">Plan an Event</GhostBtn>
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
+              <GoldBtn onClick={onBook} className="w-full sm:w-auto">Reserve Your Stay</GoldBtn>
+              <GhostBtn href="#events" className="w-full sm:w-auto">Plan an Event</GhostBtn>
             </div>
           </Reveal>
 
-          <Reveal delay={460}>
-            <div className="flex flex-wrap gap-x-14 gap-y-6 mt-16 pt-9 border-t border-white/15">
+          {/* Social badges */}
+          <Reveal delay={420}>
+            <div className="flex flex-wrap items-center gap-3 mt-7">
+              <a
+                href={instaUrl(s.instagram)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="group flex items-center gap-2.5 rounded-full pl-1.5 pr-4 py-1.5 glass hover:bg-white/15 transition-all"
+              >
+                <span className="w-9 h-9 rounded-full flex items-center justify-center bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#962fbf] shrink-0">
+                  <svg viewBox="0 0 24 24" className="w-[18px] h-[18px] fill-white">
+                    <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38A5.9 5.9 0 0 0 .63 4.14c-.3.76-.5 1.64-.56 2.91C.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13a5.9 5.9 0 0 0 2.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.9 5.9 0 0 0 2.13-1.38 5.9 5.9 0 0 0 1.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 0 0-1.38-2.13A5.9 5.9 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0Z" />
+                  </svg>
+                </span>
+                <span className="text-white text-[13px] font-medium">@{s.instagram}</span>
+              </a>
+
+              <a
+                href={whatsappChat()}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="flex items-center gap-2.5 rounded-full pl-1.5 pr-4 py-1.5 glass hover:bg-white/15 transition-all"
+              >
+                <span className="w-9 h-9 rounded-full bg-[#25D366] flex items-center justify-center shrink-0">
+                  <WaIcon className="w-[18px] h-[18px] fill-white" />
+                </span>
+                <span className="text-white text-[13px] font-medium">WhatsApp</span>
+              </a>
+            </div>
+          </Reveal>
+
+          <Reveal delay={520}>
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-x-8 sm:gap-x-14 gap-y-5 mt-10 sm:mt-14 pt-7 sm:pt-9 border-t border-white/15">
               {[
                 ["16", "Elegant Rooms"],
-                ["01", "Grand Banquet Hall"],
+                ["01", "Banquet Hall"],
                 ["24×7", "Hospitality"],
-                ["5★", "Guest Experience"],
+                ["5★", "Guest Rating"],
               ].map(([n, l]) => (
                 <div key={l}>
-                  <div className="font-serif text-4xl gold-text">{n}</div>
-                  <div className="text-[10px] tracking-[0.3em] uppercase text-white/55 mt-1.5">{l}</div>
+                  <div className="font-serif text-3xl sm:text-4xl gold-text">{n}</div>
+                  <div className="text-[9.5px] sm:text-[10px] tracking-[0.25em] uppercase text-white/60 mt-1.5">{l}</div>
                 </div>
               ))}
             </div>
@@ -221,11 +284,20 @@ function Hero({ onBook, store }: { onBook: () => void; store: ContentStore }) {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 text-white/50">
+      <div className="absolute bottom-7 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 text-white/50">
         <span className="text-[9px] tracking-[0.35em] uppercase">Scroll</span>
         <span className="w-px h-10 bg-gradient-to-b from-gold-400 to-transparent" />
       </div>
     </section>
+  );
+}
+
+/** Reusable WhatsApp glyph. */
+function WaIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884a9.82 9.82 0 016.99 2.898 9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.887 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+    </svg>
   );
 }
 
@@ -489,6 +561,10 @@ function Gallery({ store }: { store: ContentStore }) {
     { id: "gallery.6", big: true },
     { id: "gallery.7" },
     { id: "gallery.8" },
+    { id: "gallery.9" },
+    { id: "gallery.10" },
+    { id: "gallery.11", big: true },
+    { id: "gallery.12" },
   ];
   return (
     <section className="py-28 md:py-36 bg-white">
@@ -564,12 +640,15 @@ function Contact({ store }: { store: ContentStore }) {
           </p>
           <div className="space-y-6">
             {[
-              { i: "📍", l: "Address", v: CONTACT.address },
-              { i: "📞", l: "Phone", v: CONTACT.phone, href: `tel:${CONTACT.phoneRaw}` },
-              { i: "💬", l: "WhatsApp", v: CONTACT.phone, href: whatsappChat() },
-              { i: "✉️", l: "Email", v: CONTACT.email, href: `mailto:${CONTACT.email}` },
-              { i: "📷", l: "Instagram", v: `@${CONTACT.instagram}`, href: CONTACT.instagramUrl },
-              { i: "🕐", l: "Reception", v: CONTACT.hours },
+              { i: "📍", l: "Address", v: store.settings.address },
+              { i: "📞", l: "Phone", v: store.settings.phone, href: telHref(store.settings.phone) },
+              ...(store.settings.phoneAlt
+                ? [{ i: "☎️", l: "Alternate", v: store.settings.phoneAlt, href: telHref(store.settings.phoneAlt) }]
+                : []),
+              { i: "💬", l: "WhatsApp", v: store.settings.whatsapp, href: whatsappChat() },
+              { i: "✉️", l: "Email", v: store.settings.email, href: `mailto:${store.settings.email}` },
+              { i: "📷", l: "Instagram", v: `@${store.settings.instagram}`, href: instaUrl(store.settings.instagram) },
+              { i: "🕐", l: "Reception", v: store.settings.hours },
             ].map((c) => (
               <div key={c.l} className="flex items-start gap-5 group">
                 <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-100 text-lg flex items-center justify-center shrink-0 group-hover:bg-emerald-900 transition-colors duration-400">
@@ -661,14 +740,14 @@ const fieldCls =
 
 /* ---------------- footer ---------------- */
 
-function Footer({ onAdmin }: { onAdmin: () => void }) {
+function Footer({ onAdmin, store }: { onAdmin: () => void; store: ContentStore }) {
   return (
-    <footer className="bg-emerald-950 text-white/75 pt-20 pb-8 relative grain overflow-hidden">
+    <footer className="bg-emerald-950 text-white/75 pt-16 sm:pt-20 pb-24 md:pb-8 relative grain overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_0%,rgba(212,175,55,.1),transparent_55%)]" />
       <div className="relative max-w-[1340px] mx-auto px-6">
         <div className="grid md:grid-cols-4 gap-12 pb-14 border-b border-white/10">
           <div>
-            <Logo />
+            <Logo store={store} />
             <p className="text-[13.5px] leading-relaxed text-white/55 mt-6 font-light">
               Vrinda Valley Resort Jaipur — a luxury destination for weddings, events, and serene
               getaways.
@@ -687,23 +766,21 @@ function Footer({ onAdmin }: { onAdmin: () => void }) {
           <div>
             <h4 className="font-serif text-white text-lg mb-6">Contact</h4>
             <ul className="space-y-2.5 text-[13.5px] text-white/55">
-              <li className="leading-relaxed">📍 {CONTACT.addressShort}</li>
+              <li className="leading-relaxed">📍 {store.settings.addressShort}</li>
               <li>
-                <a href={`tel:${CONTACT.phoneRaw}`} className="hover:text-gold-200">📞 {CONTACT.phone}</a>
+                <a href={telHref(store.settings.phone)} className="hover:text-gold-200">📞 {store.settings.phone}</a>
               </li>
+              {store.settings.phoneAlt && (
+                <li>
+                  <a href={telHref(store.settings.phoneAlt)} className="hover:text-gold-200">☎️ {store.settings.phoneAlt}</a>
+                </li>
+              )}
               <li>
                 <a href={whatsappChat()} target="_blank" rel="noopener noreferrer" className="hover:text-gold-200">💬 WhatsApp</a>
               </li>
               <li>
-                <a href={`mailto:${CONTACT.email}`} className="hover:text-gold-200 break-all">✉️ {CONTACT.email}</a>
+                <a href={`mailto:${store.settings.email}`} className="hover:text-gold-200 break-all">✉️ {store.settings.email}</a>
               </li>
-            </ul>
-            <ul className="hidden">
-              <li>16 Luxury Rooms</li>
-              <li>Grand Banquet Hall</li>
-              <li>Swimming Pool</li>
-              <li>Gourmet Kitchen</li>
-              <li>Landscaped Gardens</li>
             </ul>
           </div>
           <div>
@@ -721,10 +798,12 @@ function Footer({ onAdmin }: { onAdmin: () => void }) {
             </form>
             <div className="flex gap-3 mt-6">
               {[
-                { i: "📷", href: CONTACT.instagramUrl, t: "Instagram" },
+                { i: "📷", href: instaUrl(store.settings.instagram), t: "Instagram" },
                 { i: "💬", href: whatsappChat(), t: "WhatsApp" },
-                { i: "📞", href: `tel:${CONTACT.phoneRaw}`, t: "Call" },
-                { i: "✉️", href: `mailto:${CONTACT.email}`, t: "Email" },
+                { i: "📞", href: telHref(store.settings.phone), t: "Call" },
+                { i: "✉️", href: `mailto:${store.settings.email}`, t: "Email" },
+                ...(store.settings.facebook ? [{ i: "📘", href: store.settings.facebook, t: "Facebook" }] : []),
+                ...(store.settings.youtube ? [{ i: "▶️", href: store.settings.youtube, t: "YouTube" }] : []),
               ].map((s) => (
                 <a
                   key={s.t}
@@ -739,23 +818,33 @@ function Footer({ onAdmin }: { onAdmin: () => void }) {
               ))}
             </div>
             <a
-              href={CONTACT.instagramUrl}
+              href={instaUrl(store.settings.instagram)}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block mt-4 text-[12.5px] text-gold-200 hover:text-gold-400 transition-colors"
             >
-              @{CONTACT.instagram}
+              @{store.settings.instagram}
             </a>
           </div>
         </div>
-        <div className="pt-7 flex flex-wrap justify-between gap-3 text-[11.5px] text-white/45">
-          <div>© {new Date().getFullYear()} Vrinda Valley Resort, Jaipur. All rights reserved.</div>
+
+        {/* centred admin access */}
+        <div className="pt-10 pb-2 flex justify-center">
+          <button
+            onClick={onAdmin}
+            title="Admin login (Ctrl+Shift+A)"
+            className="group inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full border border-white/15 bg-white/5 hover:bg-gold-400 hover:border-gold-400 hover:text-emerald-950 text-white/70 text-[12.5px] tracking-wide transition-all duration-400"
+          >
+            <span className="text-sm">🔐</span>
+            Admin Login
+          </button>
+        </div>
+
+        <div className="pt-5 flex flex-col sm:flex-row flex-wrap items-center justify-between gap-3 text-[11.5px] text-white/45 text-center sm:text-left">
+          <div>© {new Date().getFullYear()} {store.settings.resortName}, Jaipur. All rights reserved.</div>
           <div className="flex gap-6 items-center">
             <a href="#" className="hover:text-gold-200">Privacy</a>
             <a href="#" className="hover:text-gold-200">Terms</a>
-            <button onClick={onAdmin} className="hover:text-gold-200 transition-colors" title="Admin login (Ctrl+Shift+A)">
-              🔐 Admin
-            </button>
           </div>
         </div>
       </div>
@@ -803,7 +892,7 @@ export default function App() {
 
   return (
     <div className="font-sans text-stone-800 bg-white overflow-x-hidden antialiased">
-      <Nav onBook={open} />
+      <Nav onBook={open} store={store} />
       <Hero onBook={open} store={store} />
       <QuickBook onBook={open} />
       <About store={store} />
@@ -813,15 +902,16 @@ export default function App() {
       <Gallery store={store} />
       <Reviews store={store} />
       <Stories stories={store.stories} />
-      <MapSection />
+      <MapSection store={store} />
       <CTA onBook={open} store={store} />
       <Contact store={store} />
-      <Footer onAdmin={() => setAdmin(true)} />
+      <Footer onAdmin={() => setAdmin(true)} store={store} />
 
       <BookingModal open={booking} onClose={() => setBooking(false)} store={store} />
       <AdminPanel store={store} open={admin} onClose={closeAdmin} />
       <AiConcierge
         onOpenBooking={open}
+        custom={store.faqs}
         onLead={(l) =>
           store.addBooking({
             name: l.name ?? "—",
@@ -834,21 +924,45 @@ export default function App() {
         }
       />
 
-      {/* Floating WhatsApp */}
+      {/* Floating WhatsApp — desktop/tablet only */}
       <a
         href={whatsappChat()}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="group fixed bottom-6 left-6 z-[85] flex items-center gap-3 bg-[#25D366] hover:bg-[#1fb757] text-white pl-4 pr-5 py-3.5 rounded-full shadow-[0_8px_30px_rgba(37,211,102,.45)] transition-all hover:scale-105 active:scale-95"
+        className="group hidden md:flex fixed bottom-6 left-6 z-[85] items-center gap-3 bg-[#25D366] hover:bg-[#1fb757] text-white pl-4 pr-5 py-3.5 rounded-full shadow-[0_8px_30px_rgba(37,211,102,.45)] transition-all hover:scale-105 active:scale-95"
       >
-        <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current shrink-0">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c0-5.45 4.436-9.884 9.888-9.884a9.82 9.82 0 016.99 2.898 9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.887 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-        </svg>
-        <span className="hidden sm:block text-sm font-semibold whitespace-nowrap max-w-0 group-hover:max-w-[120px] overflow-hidden transition-all duration-500">
+        <WaIcon className="w-6 h-6 fill-current shrink-0" />
+        <span className="text-sm font-semibold whitespace-nowrap max-w-0 group-hover:max-w-[120px] overflow-hidden transition-all duration-500">
           WhatsApp
         </span>
       </a>
+
+      {/* Mobile sticky action bar */}
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-[86] bg-emerald-950/95 backdrop-blur-xl border-t border-white/10 px-3 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] flex gap-2.5">
+        <a
+          href={telHref(store.settings.phone)}
+          className="flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-white/85 active:bg-white/10"
+        >
+          <span className="text-lg leading-none">📞</span>
+          <span className="text-[10px] tracking-wide">Call</span>
+        </a>
+        <a
+          href={whatsappChat()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-white/85 active:bg-white/10"
+        >
+          <WaIcon className="w-[18px] h-[18px] fill-[#25D366]" />
+          <span className="text-[10px] tracking-wide">WhatsApp</span>
+        </a>
+        <button
+          onClick={open}
+          className="flex-[1.4] btn-gold relative text-emerald-950 font-bold text-[13px] rounded-xl"
+        >
+          <span className="relative z-10">Book Now</span>
+        </button>
+      </div>
     </div>
   );
 }

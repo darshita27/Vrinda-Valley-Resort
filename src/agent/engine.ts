@@ -156,9 +156,24 @@ const FALLBACKS = [
   "Hmm, that one's outside what I know. 💭\n\nTry asking me about **room availability, wedding packages, pool parties, food menus, directions** — or I can connect you to our team directly.",
 ];
 
+/** Admin-authored knowledge, merged ahead of the built-in intents. */
+export type CustomFaq = { id: string; keywords: string; answer: string; chips: string; enabled: boolean };
+
+function customToIntent(f: CustomFaq): Intent {
+  const parts = f.keywords.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+  return {
+    id: `custom.${f.id}`,
+    phrases: parts.filter((p) => p.includes(" ")),
+    keywords: parts.filter((p) => !p.includes(" ")),
+    answer: f.answer,
+    chips: f.chips.split(",").map((s) => s.trim()).filter(Boolean),
+  };
+}
+
 export function respond(
   raw: string,
-  booking: BookingState
+  booking: BookingState,
+  custom: CustomFaq[] = []
 ): { reply: AgentReply; booking: BookingState } {
   const text = raw.trim();
   const tokens = normalise(text);
@@ -243,10 +258,12 @@ export function respond(
     };
   }
 
-  /* ---- normal intent matching ---- */
+  /* ---- normal intent matching (admin knowledge wins ties) ---- */
+  const pool = [...custom.filter((c) => c.enabled).map(customToIntent), ...INTENTS];
+
   let best: Intent | null = null;
   let bestScore = 0;
-  for (const intent of INTENTS) {
+  for (const intent of pool) {
     const s = scoreIntent(intent, text, tokens);
     if (s > bestScore) {
       bestScore = s;

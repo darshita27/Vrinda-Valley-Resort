@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CONTACT } from "../data";
+import { getSettings, telHref } from "../settings";
 import { sendToWhatsApp, whatsappLink, type Lead } from "../whatsapp";
 
 export default function BookingModal({
@@ -101,7 +101,7 @@ export default function BookingModal({
             </a>
             <div className="flex gap-3">
               <a
-                href={`tel:${CONTACT.phoneRaw}`}
+                href={telHref(getSettings().phone)}
                 className="flex-1 border border-stone-300 text-stone-700 py-3 rounded-full text-sm hover:bg-stone-50"
               >
                 📞 Call Instead
@@ -172,7 +172,8 @@ export default function BookingModal({
               Send Enquiry on WhatsApp
             </button>
             <p className="text-center text-[11px] text-stone-400">
-              Or call {CONTACT.phone}
+              Or call {getSettings().phone}
+              {getSettings().phoneAlt ? ` / ${getSettings().phoneAlt}` : ""}
             </p>
           </form>
         )}

@@ -4,6 +4,9 @@ import { fileToDataUrl, STATUS_META } from "../store";
 import { SEO_KEYWORDS, type Story } from "../data";
 import { MEDIA_SLOTS, MEDIA_GROUPS } from "../media";
 import { whatsappLink } from "../whatsapp";
+import SettingsTab from "./admin/SettingsTab";
+import BotTab from "./admin/BotTab";
+import Login from "./admin/Login";
 
 const blank = (): Story => ({
   id: `s${Date.now()}`,
@@ -30,10 +33,10 @@ export default function AdminPanel({
   open: boolean;
   onClose: () => void;
 }) {
-  const [tab, setTab] = useState<"bookings" | "media" | "seo" | "stories" | "reviews">("bookings");
-  const [user, setUser] = useState("");
-  const [pass, setPass] = useState("");
-  const [err, setErr] = useState("");
+  const [tab, setTab] = useState<
+    "bookings" | "media" | "settings" | "bot" | "seo" | "stories" | "reviews"
+  >("bookings");
+
 
   // SEO draft
   const [title, setTitle] = useState(store.seo.title);
@@ -57,33 +60,7 @@ export default function AdminPanel({
   if (!store.isAdmin) {
     return (
       <Shell onClose={onClose}>
-        <div className="p-10 max-w-sm mx-auto">
-          <div className="text-center mb-8">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-gold-200 to-gold-500 flex items-center justify-center font-serif text-2xl text-emerald-950 mx-auto mb-4">
-              V
-            </div>
-            <h2 className="font-serif text-2xl text-stone-900">Admin Login</h2>
-            <p className="text-stone-500 text-[13px] mt-1">Manage SEO, stories and reviews</p>
-          </div>
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!store.login(user, pass)) setErr("Invalid credentials. Please try again.");
-              else setErr("");
-            }}
-          >
-            <input value={user} onChange={(e) => setUser(e.target.value)} placeholder="Username" className={inp} />
-            <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} placeholder="Password" className={inp} />
-            {err && <p className="text-red-600 text-[12.5px]">{err}</p>}
-            <button className="w-full bg-emerald-900 hover:bg-emerald-800 text-white font-semibold py-3.5 rounded-full text-sm transition-all">
-              Sign In
-            </button>
-          </form>
-          <div className="mt-6 text-center text-[11.5px] text-stone-400 bg-stone-50 rounded-xl p-3 border border-stone-200">
-            Demo access — <strong>admin</strong> / <strong>vrinda@2026</strong>
-          </div>
-        </div>
+        <Login store={store} />
       </Shell>
     );
   }
@@ -114,7 +91,9 @@ export default function AdminPanel({
         <div className="flex gap-1 px-7 pt-4 bg-stone-50 border-b border-stone-200 shrink-0">
           {([
             ["bookings", `📋 Bookings${newBookings ? ` · ${newBookings} new` : ""}`],
+            ["settings", "⚙️ Settings"],
             ["media", `🖼️ Photos (${MEDIA_SLOTS.length})`],
+            ["bot", `🤖 AI Bot${store.faqs.length ? ` (${store.faqs.length})` : ""}`],
             ["seo", "🔍 SEO"],
             ["stories", `📝 Stories (${store.stories.length})`],
             ["reviews", `⭐ Reviews${pending.length ? ` · ${pending.length} new` : ""}`],
@@ -134,6 +113,12 @@ export default function AdminPanel({
         <div className="flex-1 overflow-y-auto chat-scroll bg-white p-7">
           {/* ---------- Bookings ---------- */}
           {tab === "bookings" && <BookingsTab store={store} />}
+
+          {/* ---------- Settings ---------- */}
+          {tab === "settings" && <SettingsTab store={store} />}
+
+          {/* ---------- AI Bot ---------- */}
+          {tab === "bot" && <BotTab store={store} />}
 
           {/* ---------- Media ---------- */}
           {tab === "media" && <MediaTab store={store} />}

@@ -1,76 +1,96 @@
-import { IMG, FALLBACK, MOMENTS } from "./data";
+import { IMG, IMG_CHAIN, FALLBACK, MOMENTS } from "./data";
 
-/**
- * Central registry of every editable photo on the website.
- * Admin can override any of these — overrides are stored by `id`.
- */
 export type MediaSlot = {
   id: string;
   label: string;
   group: string;
   note?: string;
   src: string;
-  fallback?: string;
+  fallback: string[];
 };
 
+type Key = keyof typeof IMG;
+
+/** Slot builder: repo photo + its CDN/raw/local chain + optional stock backup. */
+const slot = (
+  id: string,
+  label: string,
+  group: string,
+  key: Key,
+  stock?: string,
+  note?: string
+): MediaSlot => ({
+  id,
+  label,
+  group,
+  note,
+  src: IMG[key],
+  fallback: [...IMG_CHAIN[key], ...(stock ? [stock] : [])],
+});
+
 export const MEDIA_SLOTS: MediaSlot[] = [
-  /* ---- hero ---- */
-  { id: "hero", label: "Hero Background", group: "Homepage", note: "Full-screen banner image", src: IMG.hero, fallback: FALLBACK.hero },
+  /* ---- branding ---- */
+  slot("brand.logo", "Resort Logo", "Branding", "logo", undefined, "Header & footer — transparent PNG works best"),
+
+  /* ---- homepage ---- */
+  slot("hero", "Hero Background", "Homepage", "hero", FALLBACK.hero, "Full-screen banner"),
 
   /* ---- about ---- */
-  { id: "about.main", label: "About — Main Photo", group: "About", src: IMG.about1, fallback: FALLBACK.room },
-  { id: "about.inset", label: "About — Inset Photo", group: "About", src: IMG.about3, fallback: FALLBACK.pool },
+  slot("about.main", "About — Main Photo", "About", "about1", FALLBACK.room),
+  slot("about.inset", "About — Inset Photo", "About", "about3", FALLBACK.pool),
 
-  /* ---- spaces ---- */
-  { id: "space.rooms", label: "Luxury Rooms", group: "Accommodations", src: IMG.about1, fallback: FALLBACK.room },
-  { id: "space.banquet", label: "Banquet Hall", group: "Accommodations", src: IMG.banquetSetup, fallback: FALLBACK.banquet },
-  { id: "space.pool", label: "Swimming Pool", group: "Accommodations", src: IMG.about3, fallback: FALLBACK.pool },
-  { id: "space.kitchen", label: "Gourmet Kitchen", group: "Accommodations", src: IMG.kitchen1, fallback: FALLBACK.kitchen },
-  { id: "space.garden", label: "Landscaped Gardens", group: "Accommodations", src: IMG.garden, fallback: FALLBACK.garden },
-  { id: "space.team", label: "Our Team", group: "Accommodations", src: IMG.about2, fallback: FALLBACK.room },
+  /* ---- accommodations ---- */
+  slot("space.rooms", "Luxury Rooms", "Accommodations", "about1", FALLBACK.room),
+  slot("space.banquet", "Banquet Hall", "Accommodations", "banquetSetup", FALLBACK.banquet),
+  slot("space.pool", "Swimming Pool", "Accommodations", "poolHero", FALLBACK.pool),
+  slot("space.kitchen", "Gourmet Kitchen", "Accommodations", "kitchen1", FALLBACK.kitchen),
+  slot("space.garden", "Landscaped Gardens", "Accommodations", "garden", FALLBACK.garden),
+  slot("space.team", "Our Team", "Accommodations", "about2", FALLBACK.room),
 
-  /* ---- features bg ---- */
-  { id: "features.bg", label: "Features Section Background", group: "Sections", src: IMG.banquetSeating, fallback: FALLBACK.banquet },
+  /* ---- section backgrounds ---- */
+  slot("features.bg", "Features Section Background", "Sections", "poolNight3", FALLBACK.banquet),
+  slot("cta.bg", "Call-to-Action Background", "Sections", "banquetStage", FALLBACK.banquet),
 
   /* ---- events ---- */
-  { id: "event.1", label: "Event 1 — Celebration Venue", group: "Events", src: IMG.banquetSetup, fallback: FALLBACK.banquet },
-  { id: "event.2", label: "Event 2 — Wedding Setup", group: "Events", src: IMG.banquetSeating, fallback: FALLBACK.banquet },
-  { id: "event.3", label: "Event 3 — Evening Ambience", group: "Events", src: IMG.banquetStage, fallback: FALLBACK.banquet },
+  slot("event.1", "Event 1 — Celebration Venue", "Events", "banquetSetup", FALLBACK.banquet),
+  slot("event.2", "Event 2 — Wedding Setup", "Events", "banquetSeating", FALLBACK.banquet),
+  slot("event.3", "Event 3 — Evening Ambience", "Events", "banquetStage", FALLBACK.banquet),
 
   /* ---- gallery ---- */
-  { id: "gallery.1", label: "Gallery 1 (large)", group: "Gallery", src: IMG.about1, fallback: FALLBACK.room },
-  { id: "gallery.2", label: "Gallery 2", group: "Gallery", src: IMG.banquetSetup, fallback: FALLBACK.banquet },
-  { id: "gallery.3", label: "Gallery 3", group: "Gallery", src: IMG.kitchen1, fallback: FALLBACK.kitchen },
-  { id: "gallery.4", label: "Gallery 4", group: "Gallery", src: IMG.garden, fallback: FALLBACK.garden },
-  { id: "gallery.5", label: "Gallery 5", group: "Gallery", src: IMG.about3, fallback: FALLBACK.pool },
-  { id: "gallery.6", label: "Gallery 6 (large)", group: "Gallery", src: IMG.banquetSeating, fallback: FALLBACK.banquet },
-  { id: "gallery.7", label: "Gallery 7", group: "Gallery", src: IMG.kitchen2, fallback: FALLBACK.kitchen },
-  { id: "gallery.8", label: "Gallery 8", group: "Gallery", src: IMG.about2, fallback: FALLBACK.room },
-
-  /* ---- cta ---- */
-  { id: "cta.bg", label: "Call-to-Action Background", group: "Sections", src: IMG.banquetStage, fallback: FALLBACK.banquet },
+  slot("gallery.1", "Gallery 1 (large)", "Gallery", "about1", FALLBACK.room),
+  slot("gallery.2", "Gallery 2", "Gallery", "banquetSetup", FALLBACK.banquet),
+  slot("gallery.3", "Gallery 3", "Gallery", "kitchen1", FALLBACK.kitchen),
+  slot("gallery.4", "Gallery 4", "Gallery", "garden", FALLBACK.garden),
+  slot("gallery.5", "Gallery 5", "Gallery", "about3", FALLBACK.pool),
+  slot("gallery.6", "Gallery 6 (large)", "Gallery", "banquetSeating", FALLBACK.banquet),
+  slot("gallery.7", "Gallery 7", "Gallery", "kitchen2", FALLBACK.kitchen),
+  slot("gallery.8", "Gallery 8", "Gallery", "about2", FALLBACK.room),
+  slot("gallery.9", "Gallery 9", "Gallery", "poolHero", FALLBACK.pool),
+  slot("gallery.10", "Gallery 10", "Gallery", "poolNight2", FALLBACK.pool),
+  slot("gallery.11", "Gallery 11 (large)", "Gallery", "poolNight3", FALLBACK.pool),
+  slot("gallery.12", "Gallery 12", "Gallery", "banquetStage", FALLBACK.banquet),
 
   /* ---- moments ---- */
   ...MOMENTS.map((m, i) => ({
     id: `moment.${i + 1}`,
-    label: `Moment ${i + 1} — ${m.caption}`,
+    label: `Moment ${i + 1}`,
     group: "Resort Moments",
-    note: m.tag,
+    note: m.caption,
     src: m.src,
+    fallback: [] as string[],
   })),
 ];
 
 export const MEDIA_GROUPS = Array.from(new Set(MEDIA_SLOTS.map((s) => s.group)));
 
-/** Overrides: { slotId: dataUrl | externalUrl } */
 export type MediaOverrides = Record<string, string>;
 
-/** Resolves the live image URL for a slot, honouring admin overrides. */
 export function resolveMedia(id: string, overrides: MediaOverrides): string {
-  if (overrides[id]) return overrides[id];
-  return MEDIA_SLOTS.find((s) => s.id === id)?.src ?? "";
+  return overrides[id] || MEDIA_SLOTS.find((s) => s.id === id)?.src || "";
 }
 
-export function slotFallback(id: string): string | undefined {
-  return MEDIA_SLOTS.find((s) => s.id === id)?.fallback;
+export function slotFallback(id: string, overrides: MediaOverrides = {}): string[] {
+  // a custom upload shouldn't fall back to the stock chain
+  if (overrides[id]) return [];
+  return MEDIA_SLOTS.find((s) => s.id === id)?.fallback ?? [];
 }

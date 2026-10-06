@@ -14,5 +14,12 @@ export default function MediaImg({
   alt: string;
   className?: string;
 }) {
-  return <SmartImg src={store.img(id)} fallback={slotFallback(id)} alt={alt} className={className} />;
+  return (
+    <SmartImg
+      src={store.img(id)}
+      fallback={slotFallback(id, store.media)}
+      alt={alt}
+      className={className}
+    />
+  );
 }

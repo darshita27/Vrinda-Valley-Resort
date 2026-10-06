@@ -1,4 +1,4 @@
-import { CONTACT } from "./data";
+import { getSettings, waNumber } from "./settings";
 
 export type Lead = {
   name?: string;
@@ -32,8 +32,9 @@ export function buildLeadMessage(lead: Lead): string {
 }
 
 /** Returns a wa.me deep link that opens WhatsApp with the message pre-filled. */
-export function whatsappLink(lead: Lead, number: string = CONTACT.whatsapp): string {
-  return `https://wa.me/${number}?text=${encodeURIComponent(buildLeadMessage(lead))}`;
+export function whatsappLink(lead: Lead, number?: string): string {
+  const n = number ?? waNumber(getSettings().whatsapp);
+  return `https://wa.me/${n}?text=${encodeURIComponent(buildLeadMessage(lead))}`;
 }
 
 /** Opens WhatsApp in a new tab/app with the enquiry ready to send. */
@@ -43,5 +44,5 @@ export function sendToWhatsApp(lead: Lead, number?: string) {
 
 /** Simple chat starter (no lead data). */
 export function whatsappChat(text = "Hello! I'd like to know more about Vrinda Valley Resort.") {
-  return `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/${waNumber(getSettings().whatsapp)}?text=${encodeURIComponent(text)}`;
 }

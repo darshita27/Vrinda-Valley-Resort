@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { SEED_REVIEWS, SEED_STORIES, type Review, type Story } from "./data";
 import { defaultSeo, type SeoSettings } from "./seo";
 import { resolveMedia, type MediaOverrides } from "./media";
+import { DEFAULT_SETTINGS, syncSettings, waNumber, type SiteSettings } from "./settings";
 
 const KEYS = {
   reviews: "vvr.reviews.v1",
@@ -10,7 +11,23 @@ const KEYS = {
   auth: "vvr.admin.v1",
   bookings: "vvr.bookings.v1",
   media: "vvr.media.v1",
+  settings: "vvr.settings.v1",
+  faqs: "vvr.faqs.v1",
+  cred: "vvr.cred.v1",
 };
+
+/** Custom question/answer pairs the admin teaches the AI concierge. */
+export type BotFaq = {
+  id: string;
+  keywords: string;
+  answer: string;
+  chips: string;
+  enabled: boolean;
+};
+
+export type Credentials = { user: string; pass: string };
+
+export const DEFAULT_CRED: Credentials = { user: "9530429585", pass: "Vrinda@1234" };
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -62,6 +79,13 @@ export function useContentStore() {
   const [isAdmin, setIsAdmin] = useState<boolean>(() => load(KEYS.auth, false));
   const [bookings, setBookings] = useState<Booking[]>(() => load(KEYS.bookings, []));
   const [media, setMedia] = useState<MediaOverrides>(() => load(KEYS.media, {}));
+  const [settings, setSettingsState] = useState<SiteSettings>(() => ({
+    ...DEFAULT_SETTINGS,
+    ...load<Partial<SiteSettings>>(KEYS.settings, {}),
+  }));
+  const [faqs, setFaqs] = useState<BotFaq[]>(() => load(KEYS.faqs, []));
+  const [cred, setCred] = useState<Credentials>(() => load(KEYS.cred, DEFAULT_CRED));
+  const [otp, setOtp] = useState<string | null>(null);
 
   useEffect(() => save(KEYS.reviews, reviews), [reviews]);
   useEffect(() => save(KEYS.stories, stories), [stories]);
@@ -69,6 +93,50 @@ export function useContentStore() {
   useEffect(() => save(KEYS.auth, isAdmin), [isAdmin]);
   useEffect(() => save(KEYS.bookings, bookings), [bookings]);
   useEffect(() => save(KEYS.media, media), [media]);
+  useEffect(() => save(KEYS.faqs, faqs), [faqs]);
+  useEffect(() => save(KEYS.cred, cred), [cred]);
+  useEffect(() => {
+    save(KEYS.settings, settings);
+    syncSettings(settings); // keep non-React helpers in sync
+  }, [settings]);
+
+  /* ---- site settings ---- */
+  const setSettings = useCallback((patch: Partial<SiteSettings>) => {
+    setSettingsState((s) => ({ ...s, ...patch }));
+  }, []);
+
+  const resetSettings = useCallback(() => setSettingsState({ ...DEFAULT_SETTINGS }), []);
+
+  /* ---- bot knowledge ---- */
+  const saveFaq = useCallback((f: BotFaq) => {
+    setFaqs((list) => (list.some((x) => x.id === f.id) ? list.map((x) => (x.id === f.id ? f : x)) : [f, ...list]));
+  }, []);
+
+  const deleteFaq = useCallback((id: string) => {
+    setFaqs((list) => list.filter((f) => f.id !== id));
+  }, []);
+
+  /* ---- security / OTP ---- */
+  const requestOtp = useCallback(() => {
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    setOtp(code);
+    const msg = encodeURIComponent(
+      `*Vrinda Valley Resort — Admin Password Reset*\n\nYour One-Time Password is: *${code}*\n\nEnter this code on the admin login screen to set a new password. If you did not request this, please ignore.`
+    );
+    window.open(`https://wa.me/${waNumber(settings.whatsapp)}?text=${msg}`, "_blank", "noopener");
+    return code;
+  }, [settings.whatsapp]);
+
+  const verifyOtp = useCallback((code: string) => !!otp && code.trim() === otp, [otp]);
+
+  const resetPassword = useCallback((newPass: string) => {
+    setCred((c) => ({ ...c, pass: newPass }));
+    setOtp(null);
+  }, []);
+
+  const updateCredentials = useCallback((next: Partial<Credentials>) => {
+    setCred((c) => ({ ...c, ...next }));
+  }, []);
 
   /* ---- bookings ---- */
   const addBooking = useCallback(
@@ -163,11 +231,18 @@ export function useContentStore() {
   }, []);
 
   /* ---- admin ---- */
-  const login = useCallback((user: string, pass: string) => {
-    const ok = user.trim().toLowerCase() === "admin" && pass === "vrinda@2026";
-    if (ok) setIsAdmin(true);
-    return ok;
-  }, []);
+  const login = useCallback(
+    (user: string, pass: string) => {
+      const u = user.trim().toLowerCase().replace(/[\s+-]/g, "");
+      const expected = cred.user.toLowerCase().replace(/[\s+-]/g, "");
+      // accept the contact number with or without the 91 country code, or "admin"
+      const match = u === expected || u === `91${expected}` || `91${u}` === expected || u === "admin";
+      const ok = match && pass === cred.pass;
+      if (ok) setIsAdmin(true);
+      return ok;
+    },
+    [cred]
+  );
 
   const logout = useCallback(() => setIsAdmin(false), []);
 
@@ -177,6 +252,9 @@ export function useContentStore() {
     seo, setSeo,
     bookings, addBooking, setBookingStatus, deleteBooking, exportBookingsCsv,
     media, setMediaOverride, clearMediaOverride, resetMedia, img,
+    settings, setSettings, resetSettings,
+    faqs, saveFaq, deleteFaq,
+    cred, updateCredentials, requestOtp, verifyOtp, resetPassword, otpPending: !!otp,
     isAdmin, login, logout,
   };
 }

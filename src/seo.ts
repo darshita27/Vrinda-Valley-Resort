@@ -91,7 +91,7 @@ export function applySeo(s: SeoSettings, reviews: Review[], stories: Story[]) {
     name: "Vrinda Valley Resort",
     description: s.description,
     url: SEO.url,
-    telephone: CONTACT.phoneRaw,
+    telephone: [CONTACT.phoneRaw, CONTACT.phone2Raw],
     email: CONTACT.email,
     sameAs: [CONTACT.instagramUrl, `https://wa.me/${CONTACT.whatsapp}`],
     priceRange: "₹₹",
@@ -148,7 +148,7 @@ export function applySeo(s: SeoSettings, reviews: Review[], stories: Story[]) {
       ["Is Vrinda Valley Resort good for a destination wedding in Jaipur?", "Yes. The resort offers a grand banquet hall, landscaped gardens, poolside venues and 16 on-site rooms, making it a complete destination wedding venue in Jaipur, Rajasthan."],
       ["Does the resort have a swimming pool?", "Yes, there is a swimming pool with lounge seating, vibrant lighting and live music options for pool parties."],
       ["Where is Vrinda Valley Resort located?", "Vrinda Valley Resort is located at Diggi Malpura Road, Bagran Ka Bam, Balawala, Hargun Ki Nangal at Charanwala, Rajasthan 303904 — with convenient access to Jaipur while surrounded by natural beauty."],
-      ["How do I book Vrinda Valley Resort?", "You can book by calling +91 95304 29585, messaging us on WhatsApp, emailing vrindavalleyjaipur@gmail.com, or using the AI concierge on our website which sends your enquiry directly to our team on WhatsApp."],
+      ["How do I book Vrinda Valley Resort?", "You can book by calling +91 95304 29585 or +91 95711 98339, messaging us on WhatsApp, emailing vrindavalleyjaipur@gmail.com, or using the AI concierge on our website which sends your enquiry directly to our team on WhatsApp."],
       ["What are the check-in and check-out timings?", "Check-in is at 2:00 PM and check-out is at 11:00 AM. Reception is open 24x7."],
       ["Is parking available at the resort?", "Yes, ample on-site parking is available, including arrangements for baraat convoys and large group arrivals."],
     ].map(([q, a]) => ({
