@@ -3,22 +3,42 @@
 /* ------------------------------------------------------------------ */
 
 const REPO = "darshita27/Vrinda-Valley-Resort";
-/** jsDelivr CDN — fast, cached, CORS-friendly (primary) */
-const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@main/client/assets`;
-/** GitHub raw (secondary) */
-const RAW = `https://raw.githubusercontent.com/${REPO}/main/client/assets`;
-/** Local copy — if you place files in `public/assets/...` these win offline */
-const LOCAL = "/assets";
 
 /**
- * Builds a resilient source chain for a repo asset.
- * Tries CDN → raw GitHub → local public folder → optional stock fallback.
+ * IMPORTANT — why this is pinned to a commit instead of `main`.
+ *
+ * The commit "Replace existing project with new structure" removed the whole
+ * `client/` folder from the repo, which deleted every resort photo from `main`.
+ * The images still exist in git history, so we read them from the last commit
+ * that contained them. This is why the site showed placeholders.
+ *
+ * Permanent fix: drop your photos into `public/photos/` (see the Photo Files
+ * tab in the admin panel) — those always take priority over these URLs.
  */
-export function asset(path: string, stock?: string): { src: string; fallback: string[] } {
-  return {
-    src: `${CDN}/${path}`,
-    fallback: [`${RAW}/${path}`, `${LOCAL}/${path}`, ...(stock ? [stock] : [])],
-  };
+const PHOTO_COMMIT = "0f2bd2973816362575679a1b6b6c881c62c0c274";
+
+/** jsDelivr CDN — fast and cached */
+const CDN = `https://cdn.jsdelivr.net/gh/${REPO}@${PHOTO_COMMIT}/client/assets`;
+/** GitHub raw — fallback */
+const RAW = `https://raw.githubusercontent.com/${REPO}/${PHOTO_COMMIT}/client/assets`;
+/** Your own photos — drop files into `public/photos/` and they win automatically */
+export const PHOTOS = "/photos";
+
+/**
+ * Resilient source chain for a resort photo.
+ *
+ * Order: your `public/photos/<name>` file → CDN copy → GitHub raw → stock backup.
+ * This means simply dropping a file into `public/photos/` replaces that photo
+ * site-wide, with no code changes at all.
+ */
+export function asset(
+  path: string,
+  stock?: string,
+  localName?: string
+): { src: string; fallback: string[] } {
+  const local = localName ? `${PHOTOS}/${localName}` : null;
+  const chain = [`${CDN}/${path}`, `${RAW}/${path}`, ...(stock ? [stock] : [])];
+  return local ? { src: local, fallback: chain } : { src: chain[0], fallback: chain.slice(1) };
 }
 
 /* ------------------------------------------------------------------ */

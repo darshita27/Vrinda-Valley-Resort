@@ -25,14 +25,40 @@ export const PATHS = {
 
 type Key = keyof typeof PATHS;
 
-/** Primary (CDN) URL for each photo. */
+/**
+ * Simple file names you can drop into `public/photos/`.
+ * Put a file here and it instantly replaces that photo across the website.
+ */
+export const LOCAL_NAMES: Record<Key, string> = {
+  logo: "logo.png",
+  logoAlt: "logo-alt.png",
+  logoMark: "logo-mark.png",
+  hero: "hero.jpg",
+  about1: "about-1.jpg",
+  about2: "about-2.jpg",
+  about3: "about-3.jpg",
+  banquetSetup: "banquet-1.jpg",
+  banquetStage: "banquet-2.jpg",
+  banquetSeating: "banquet-3.jpg",
+  kitchen1: "kitchen-1.jpg",
+  kitchen2: "kitchen-2.jpg",
+  garden: "garden-1.jpg",
+  poolHero: "pool-1.jpg",
+  poolNight1: "pool-2.jpg",
+  poolNight2: "pool-3.jpg",
+  poolNight3: "pool-4.jpg",
+  poolNight5: "pool-5.jpg",
+  poolNight7: "pool-6.jpg",
+};
+
+/** Primary URL for each photo (your local file wins if present). */
 export const IMG = Object.fromEntries(
-  (Object.keys(PATHS) as Key[]).map((k) => [k, asset(PATHS[k]).src])
+  (Object.keys(PATHS) as Key[]).map((k) => [k, asset(PATHS[k], undefined, LOCAL_NAMES[k]).src])
 ) as Record<Key, string>;
 
-/** Full resilient source chain for each photo (CDN → raw → local). */
+/** Backup chain: CDN → GitHub raw. */
 export const IMG_CHAIN = Object.fromEntries(
-  (Object.keys(PATHS) as Key[]).map((k) => [k, asset(PATHS[k]).fallback])
+  (Object.keys(PATHS) as Key[]).map((k) => [k, asset(PATHS[k], undefined, LOCAL_NAMES[k]).fallback])
 ) as Record<Key, string[]>;
 
 /** Graceful fallbacks if a repo asset is unavailable */

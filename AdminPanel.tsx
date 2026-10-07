@@ -7,6 +7,7 @@ import { whatsappLink } from "../whatsapp";
 import SettingsTab from "./admin/SettingsTab";
 import BotTab from "./admin/BotTab";
 import PublishTab from "./admin/PublishTab";
+import PhotoFilesTab from "./admin/PhotoFilesTab";
 import Login from "./admin/Login";
 
 const blank = (): Story => ({
@@ -35,7 +36,7 @@ export default function AdminPanel({
   onClose: () => void;
 }) {
   const [tab, setTab] = useState<
-    "bookings" | "media" | "settings" | "bot" | "publish" | "seo" | "stories" | "reviews"
+    "bookings" | "media" | "files" | "settings" | "bot" | "publish" | "seo" | "stories" | "reviews"
   >("bookings");
 
 
@@ -98,7 +99,8 @@ export default function AdminPanel({
           {([
             ["bookings", `📋 Bookings${newBookings ? ` · ${newBookings} new` : ""}`],
             ["settings", "⚙️ Settings"],
-            ["media", `🖼️ Photos (${MEDIA_SLOTS.length})`],
+            ["files", "📁 Photo Files"],
+            ["media", `🖼️ Quick Edit (${MEDIA_SLOTS.length})`],
             ["bot", `🤖 AI Bot${store.faqs.length ? ` (${store.faqs.length})` : ""}`],
             ["seo", "🔍 SEO"],
             ["stories", `📝 Stories (${store.stories.length})`],
@@ -129,6 +131,9 @@ export default function AdminPanel({
 
           {/* ---------- Publish ---------- */}
           {tab === "publish" && <PublishTab store={store} />}
+
+          {/* ---------- Photo files ---------- */}
+          {tab === "files" && <PhotoFilesTab />}
 
           {/* ---------- Media ---------- */}
           {tab === "media" && <MediaTab store={store} />}

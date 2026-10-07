@@ -15,6 +15,9 @@ type Msg = {
 
 const now = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
+/** Remembers that the visitor has already seen the one-time nudge. */
+const NUDGE_KEY = "vvr.chat.nudged";
+
 const WELCOME: Msg = {
   id: 0,
   role: "bot",
@@ -38,30 +41,54 @@ export default function AiConcierge({
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
   const [booking, setBooking] = useState<BookingState>(emptyBooking());
-  const [unread, setUnread] = useState(true);
+  // the greeting badge + nudge are one-time only, remembered across visits
+  const [unread, setUnread] = useState(() => localStorage.getItem(NUDGE_KEY) !== "1");
   const [nudge, setNudge] = useState(false);
+  /** Once true the nudge can never appear again for this visitor. */
+  const nudgeSpent = useRef(localStorage.getItem(NUDGE_KEY) === "1");
 
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const idRef = useRef(1);
+
+  const retireNudge = () => {
+    nudgeSpent.current = true;
+    setNudge(false);
+    setUnread(false);
+    try {
+      localStorage.setItem(NUDGE_KEY, "1");
+    } catch {
+      /* private mode — in-memory ref still prevents repeats */
+    }
+  };
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [msgs, typing]);
 
   useEffect(() => {
-    if (open) {
-      setUnread(false);
-      setNudge(false);
-      setTimeout(() => inputRef.current?.focus(), 350);
-    }
-  }, [open]);
-
-  // gentle attention nudge after a while
-  useEffect(() => {
-    const t = setTimeout(() => !open && setNudge(true), 9000);
+    if (!open) return;
+    retireNudge();
+    const t = setTimeout(() => inputRef.current?.focus(), 350);
     return () => clearTimeout(t);
   }, [open]);
+
+  // One gentle nudge, 9s after load. Never shown again — not after closing
+  // the chat, not on the next page visit.
+  useEffect(() => {
+    if (nudgeSpent.current) return;
+
+    const show = setTimeout(() => {
+      if (nudgeSpent.current) return;
+      setNudge(true);
+      // auto-dismiss so it never lingers on screen
+      setTimeout(retireNudge, 9000);
+    }, 9000);
+
+    return () => clearTimeout(show);
+    // deliberately runs once — must not restart when the chat is closed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const send = (raw?: string) => {
     const text = (raw ?? input).trim();
@@ -140,9 +167,18 @@ export default function AiConcierge({
       {/* Launcher */}
       <div className="fixed bottom-[5.5rem] md:bottom-6 right-4 md:right-6 z-[90] flex flex-col items-end gap-3">
         {nudge && !open && (
-          <div className="bg-white rounded-2xl rounded-br-sm shadow-2xl px-4 py-3 max-w-[230px] text-sm text-stone-700 border border-stone-100 animate-[fadeUp_.4s_ease]">
-            <span className="font-medium text-emerald-900">Need help?</span> Ask me about rooms or
-            weddings — I reply instantly ✨
+          <div className="relative bg-white rounded-2xl rounded-br-sm shadow-2xl pl-4 pr-8 py-3 max-w-[230px] text-sm text-stone-700 border border-stone-100 animate-[fadeUp_.4s_ease]">
+            <button
+              onClick={retireNudge}
+              aria-label="Dismiss"
+              className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 flex items-center justify-center text-xs leading-none transition-colors"
+            >
+              ✕
+            </button>
+            <button onClick={() => setOpen(true)} className="text-left">
+              <span className="font-medium text-emerald-900">Need help?</span> Ask me about rooms or
+              weddings — I reply instantly ✨
+            </button>
           </div>
         )}
         <button
@@ -150,7 +186,10 @@ export default function AiConcierge({
           className="relative group w-16 h-16 rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500 shadow-[0_8px_30px_rgba(217,169,59,.5)] flex items-center justify-center transition-transform hover:scale-110 active:scale-95"
           aria-label="AI Concierge"
         >
-          <span className="absolute inset-0 rounded-full bg-amber-400/40 animate-ping-slow" />
+          {/* attention ring stops for good once the visitor has engaged */}
+          {unread && !open && (
+            <span className="absolute inset-0 rounded-full bg-amber-400/40 animate-ping-slow" />
+          )}
           <span className="relative text-2xl">{open ? "✕" : "💬"}</span>
           {unread && !open && (
             <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-emerald-600 border-2 border-white text-[10px] text-white flex items-center justify-center font-bold">
